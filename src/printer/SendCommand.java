@@ -104,6 +104,8 @@ public class SendCommand extends Thread {
         
         System.out.println(fileName);
         
+        sendInfo("M110 N0");
+        
         readFile(file);
         
         for(String gcode : this.fileLines){
@@ -129,6 +131,8 @@ public class SendCommand extends Thread {
         System.out.println(fileName);
         
         readFile(file);
+        
+        sendInfo("M110 N0");
         
         sendInfo("M28 " + fileName.toUpperCase());
         

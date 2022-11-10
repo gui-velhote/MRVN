@@ -31,10 +31,11 @@ public class Printer implements SerialPortDataListener{
     private final Pattern POSITION_MONITOR = Pattern.compile("X:[0-9]+[.][0-9]+ Y:[0-9]+[.][0-9]+ Z:[0-9]+[.][0-9]+");
     private final Pattern FILE_OPEN_FAILED = Pattern.compile("open failed");
     private final Pattern FILE_CODE = Pattern.compile("^N[0-9]+");
+    private final Pattern FILE_IN_SD = Pattern.compile(".*[.].*[ ]");
     
     private String data;
     private ArrayList<DataListener> dataListeners = new ArrayList();
-    private ArrayList<String> fileLines;
+    private ArrayList<String> filesInSD = new ArrayList();
     
     private SendCommand sendCommand;
     
@@ -43,6 +44,7 @@ public class Printer implements SerialPortDataListener{
         this.CONN_PORT.setComPortParameters(115200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
         this.CONN_PORT.addDataListener(this);
         this.CONN_PORT.openPort(); //opens port
+        sendInfo("M20");
         
     }
     
@@ -67,19 +69,46 @@ public class Printer implements SerialPortDataListener{
         this.sendCommand = new SendCommand(this.CONN_PORT, gcode, 0);
         this.sendCommand.start();
     }
-    
+    /*
     public void printFile(String filePath){
         
         this.sendCommand = new SendCommand(this.CONN_PORT, filePath, 1);
         this.sendCommand.start();
         
     }
+    */
     
     public void sendFile(String filePath){
+        
+        File file = new File(filePath);
+        String filePathName = file.getName().replaceAll("[.].*", "").strip().toUpperCase();
+        
+        for(String s : this.filesInSD){
+            
+            System.out.println(filePathName);
+            String filesSDName = s.replaceAll("[.].*", "").strip();
+            System.out.println(filesSDName);
+            if(filePathName.equals(filesSDName)){
+                System.out.println("file in SD Card: " + filesSDName);
+               
+                this.sendCommand = new SendCommand(this.CONN_PORT, "M23" + filesSDName.toUpperCase() + ".GCO", 0);
+                this.sendCommand.start();
+                this.sendCommand = new SendCommand(this.CONN_PORT, "M24", 0);
+                this.sendCommand.start();
+                
+                return;
+            }
+        }
         
         this.sendCommand = new SendCommand(this.CONN_PORT, filePath, 2);
         this.sendCommand.start();
         
+    }
+    
+    public void listFiles(){
+        for(String s : this.filesInSD){
+            System.out.println(s);
+        }
     }
     
     @Override
@@ -104,19 +133,12 @@ public class Printer implements SerialPortDataListener{
             
             char[] dataChar = this.data.toCharArray();
             
-            //System.out.println(this.data.strip());
-            
-            //this.data = "";
-            
             if(dataChar[dataChar.length-1] == '\n'){
                 System.out.println(this.data.strip());
                 
-                /*
-                for(SendToClient stc : this.serverListeners){
-                    stc.sendData(this.data, this.INDEX);
-                }*/
                 
                 Matcher matchError = this.ERROR_ON_LINE_READ.matcher(this.data);
+                Matcher matchFile = this.FILE_IN_SD.matcher(this.data);
                         
                 if(matchError.find()){
                     try {
@@ -136,6 +158,13 @@ public class Printer implements SerialPortDataListener{
                         Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
+                }
+                
+                else if(matchFile.find()){
+                    
+                    while(matchFile.find()){
+                        this.filesInSD.add(matchFile.group().toUpperCase());
+                    }
                 }
                 
                 else if(this.TEMPERATURE_CHECK.matcher(this.data).find()){
@@ -159,9 +188,11 @@ public class Printer implements SerialPortDataListener{
                 
                 else if(this.FILE_OPEN_FAILED.matcher(this.data).find()){
                     
+                    
                 }
                 
                 this.data = "";
+                
             }
             
         }

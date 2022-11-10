@@ -36,13 +36,18 @@ public class MRVN20 {
                     System.out.println("Digite o gcode: ");
                     p.sendInfo(input.nextLine());
                     break;
+                /*
                 case "T":
                     System.out.println("Digite o caminho: ");
                     p.printFile(input.nextLine());
                     break;
+                */
                 case "P":
                     System.out.println("Digite o caminho: ");
                     p.sendFile(input.nextLine());
+                    break;
+                case "p":
+                    p.listFiles();
                     break;
                 case "0":
                     System.exit(0);
