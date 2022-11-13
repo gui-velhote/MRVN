@@ -18,21 +18,24 @@ import java.util.logging.Logger;
  *
  * @author Loki
  */
-public class SendCommand extends Thread {
+public class SendCommand extends Thread implements CommandListener {
     
     private final SerialPort CONN_PORT;
     private final String INPUT_STRING;
     private final int mode;
     
+    private int printing;
+    private int nextFileLine;
     private ArrayList<String> fileLines;
     
     public SendCommand(SerialPort connPort, String gcode, int mode){
         this.CONN_PORT = connPort;
         this.INPUT_STRING = gcode;
         this.mode = mode;
+        this.printing = 0;
     }
     
-    public void readFile(File file){
+    public ArrayList<String> readFile(File file){
         
         FileReader rd = null;
         this.fileLines = new ArrayList();
@@ -84,6 +87,8 @@ public class SendCommand extends Thread {
                 Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        return this.fileLines;
     }    
     
     private void sendInfo(String gcode){
@@ -96,6 +101,7 @@ public class SendCommand extends Thread {
         }
     }
     
+    /*
     public void printFile(String filePath){
         
         File file = new File(filePath);
@@ -110,14 +116,46 @@ public class SendCommand extends Thread {
         
         for(String gcode : this.fileLines){
             
+            //System.out.println(gcode);
+            
+            while(this.wait == 1){
+                
+            }
+            
+            System.out.println("Done waiting");
+            
             try {
                 sendInfo(gcode);
                 
-                Thread.sleep(10);
+                Thread.sleep(10);                
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(SendCommand.class.getName()).log(Level.SEVERE, null, ex);
+            } finally{
+                this.wait = 1;
+                System.out.println("Waiting");
             }
             
+        }
+        
+    }
+    */
+    
+    public void printFile(String filePath){
+        
+        try {
+            this.printing = 1;
+            
+            readFile(new File(filePath));
+            
+            sendInfo("M110 N0");
+            
+            Thread.sleep(10);
+            
+            sendInfo(this.fileLines.get(0));
+            this.nextFileLine = 1;
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SendCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
@@ -159,6 +197,10 @@ public class SendCommand extends Thread {
         return this.fileLines.get(index);
     }
     
+    public int getPrinting(){
+        return this.printing;
+    }
+    
     @Override
     public void run(){
         
@@ -172,6 +214,27 @@ public class SendCommand extends Thread {
             case 2:
                 sendFile(this.INPUT_STRING);
                 break;
+        }
+    }
+ 
+    @Override
+    public void sentCommand(){
+        
+        System.out.println("Listened");
+        
+        System.out.println("Line: " + this.nextFileLine);
+        System.out.println("Size: " + this.fileLines.size());
+        
+        if(this.nextFileLine == this.fileLines.size()){
+            this.nextFileLine = 0;
+            this.printing = 0;
+            this.fileLines.clear();
+            //sendInfo("G28");
+        }
+        else{
+            System.out.println("Sending: " + this.fileLines.get(this.nextFileLine));
+            sendInfo(this.fileLines.get(this.nextFileLine));
+            this.nextFileLine++;
         }
     }
     

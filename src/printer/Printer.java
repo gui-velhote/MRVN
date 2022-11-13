@@ -34,8 +34,12 @@ public class Printer implements SerialPortDataListener{
     private final Pattern FILE_IN_SD = Pattern.compile(".*[.].*[ ]");
     
     private String data;
-    private ArrayList<DataListener> dataListeners = new ArrayList();
+    private int printFile;
+    private ArrayList<CommandListener> sentDataListeners = new ArrayList();
+    private ArrayList<DataListener> TempDataListeners = new ArrayList();
     private ArrayList<String> filesInSD = new ArrayList();
+    private ArrayList<String> fileLines;
+    private PrinterData printerData;
     
     private SendCommand sendCommand;
     
@@ -50,6 +54,8 @@ public class Printer implements SerialPortDataListener{
     
     private void initializeVariables(){
         this.data = "";
+        this.printFile = 0;
+        this.printerData = new PrinterData();
     }
     
     public Printer(SerialPort connPort){
@@ -60,8 +66,12 @@ public class Printer implements SerialPortDataListener{
         
     }
     
-    public void addListener(DataListener toAdd){
-        this.dataListeners.add(toAdd);
+    public void addDataListener(CommandListener toAdd){
+        this.sentDataListeners.add(toAdd);
+    }
+    
+    public void addTempListener(DataListener toAdd){
+        this.TempDataListeners.add(toAdd);
     }
     
     public void sendInfo(String gcode){
@@ -69,14 +79,17 @@ public class Printer implements SerialPortDataListener{
         this.sendCommand = new SendCommand(this.CONN_PORT, gcode, 0);
         this.sendCommand.start();
     }
-    /*
+    
     public void printFile(String filePath){
         
+        this.printFile = 1;
+        
         this.sendCommand = new SendCommand(this.CONN_PORT, filePath, 1);
+        addDataListener(this.sendCommand);
         this.sendCommand.start();
         
     }
-    */
+    
     
     public void sendFile(String filePath){
         
@@ -111,6 +124,10 @@ public class Printer implements SerialPortDataListener{
         }
     }
     
+    public PrinterData getPrinterData(){
+        return this.printerData;
+    }
+    
     @Override
     public int getListeningEvents(){
         return (SerialPort.LISTENING_EVENT_DATA_AVAILABLE | SerialPort.LISTENING_EVENT_PORT_DISCONNECTED);
@@ -127,9 +144,7 @@ public class Printer implements SerialPortDataListener{
                     this.data += (char)newData[i];
             }
             
-            for(DataListener drl : this.dataListeners){
-                drl.dataChange();
-            }
+            
             
             char[] dataChar = this.data.toCharArray();
             
@@ -139,7 +154,24 @@ public class Printer implements SerialPortDataListener{
                 
                 Matcher matchError = this.ERROR_ON_LINE_READ.matcher(this.data);
                 Matcher matchFile = this.FILE_IN_SD.matcher(this.data);
+                
+                if(this.DATA_RECIEVED.matcher(this.data).find()){
+                  
+                    
+                    if(this.printFile == 1){
+                        System.out.println("Sending to listeners");
+                        for(CommandListener drl : this.sentDataListeners){
+                            
+                            drl.sentCommand();
+                            
+                        }
                         
+                        this.printFile = this.sendCommand.getPrinting();
+                        
+                          System.out.println(this.printFile);
+                    }
+                }
+                
                 if(matchError.find()){
                     try {
                         //this.recieved = 0;
@@ -169,7 +201,13 @@ public class Printer implements SerialPortDataListener{
                 
                 else if(this.TEMPERATURE_CHECK.matcher(this.data).find()){
                     try {
-                        //this.tempActive = 1;
+                        
+                        this.printerData.parseData(this.data);
+                        
+                        for(DataListener dl : this.TempDataListeners){
+                            dl.tempChange(this.printerData);
+                        }
+                        
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {
                     }
@@ -181,11 +219,15 @@ public class Printer implements SerialPortDataListener{
                     } catch (InterruptedException ex) {
                     }
                 }
+                /*
                 else if(this.DATA_RECIEVED.matcher(this.data).find()){
-                    //this.recieved = 1;
-                    //this.fileRead.remove(0);
+                    System.out.println("found: ok");
+                    if(this.printFile == 1){
+                        System.out.println("printFile");
+                        this.sendCommand.setWait(0);
+                    }
                 }
-                
+                */
                 else if(this.FILE_OPEN_FAILED.matcher(this.data).find()){
                     
                     

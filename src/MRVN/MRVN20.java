@@ -7,6 +7,7 @@ package MRVN;
 import printer.Printer;
 import com.fazecast.jSerialComm.*;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 /**
  *
@@ -21,33 +22,48 @@ public class MRVN20 {
         
         Scanner input = new Scanner(System.in);
         
-        for(SerialPort ports : SerialPort.getCommPorts()){
-            System.out.println(ports.getDescriptivePortName());
+        ArrayList<Printer> printers = new ArrayList();
+        
+        for(SerialPort port : SerialPort.getCommPorts()){
+            printers.add(new Printer(port));
         }
         
-        SerialPort port = SerialPort.getCommPorts()[0];
-        Printer p = new Printer(port);
-        
         System.out.println("Digite o comando: ");
+        
+        String gcode;
+        String path;
         
         while(true){
             switch(input.nextLine()){
                 case "t":
                     System.out.println("Digite o gcode: ");
-                    p.sendInfo(input.nextLine());
+                    gcode = input.nextLine();
+                    for(Printer p : printers){
+                        p.sendInfo(gcode);
+                    }
+                    
                     break;
-                /*
+                
                 case "T":
                     System.out.println("Digite o caminho: ");
-                    p.printFile(input.nextLine());
+                    path = gcode = input.nextLine();
+                    for(Printer p : printers){
+                        p.printFile(path);
+                    }
+                    
                     break;
-                */
+                
                 case "P":
                     System.out.println("Digite o caminho: ");
-                    p.sendFile(input.nextLine());
+                    path = gcode = input.nextLine();
+                    for(Printer p : printers){
+                       p.sendFile(path);
+                    }
                     break;
                 case "p":
-                    p.listFiles();
+                    for(Printer p : printers){
+                       p.listFiles();
+                    }
                     break;
                 case "0":
                     System.exit(0);
