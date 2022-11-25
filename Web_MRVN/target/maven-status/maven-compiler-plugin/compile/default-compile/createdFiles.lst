@@ -1,6 +1,0 @@
-printer\SendCommand.class
-net\webapp\Web_MRVN\WebMrvnApplication.class
-printer\Printer.class
-net\webapp\Web_MRVN\WebController.class
-net\webapp\Web_MRVN\Services.class
-printer\DataListener.class
