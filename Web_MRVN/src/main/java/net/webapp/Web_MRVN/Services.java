@@ -22,23 +22,23 @@ import org.springframework.ui.Model;
 @Service
 public class Services {
     
-   
-    List<String> files = new ArrayList<>();
-   // String dir = System.getProperty("user.dir")+"\\Files\\";
-    String dir = "C:\\Users\\";
-    File file_1_1 = new File(dir);
-    File afile[] = file_1_1.listFiles();
+
     
     public void files(Model model){
+            List<String> files = new ArrayList<>();
+             // String dir = System.getProperty("user.dir")+"\\Files\\";
+            String dir = "C:\\upload";
+             File file_1_1 = new File(dir);
+             File afile[] = file_1_1.listFiles();
                files.clear();
                int i = 0;
                for (int j = afile.length; i < j; i++) {
 		File arquivos = afile[i];
                 files.add(arquivos.getName());
-		//System.out.println(files.get(i));
+		System.out.println(files.get(i));
                }
     
-    
+              System.out.println("Atualizado");
               model.addAttribute("files", files);
     }
     

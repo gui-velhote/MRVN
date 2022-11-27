@@ -27,6 +27,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import printer.*;
 import com.fazecast.jSerialComm.SerialPort;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.support.GenericWebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.DispatcherServlet;
 
 
 /**
@@ -49,15 +62,17 @@ public class WebController{
          private Services service;
           
         public WebController() {
-            conn.run();
+            //conn.run();
             this.printers = conn.getPrinters();
+            
         }
    
         @RequestMapping(value = "/", method = RequestMethod.GET)
         public String Refresh(Model model){
-              service.paths();
-              service.files(model);
- 
+   
+             service.files(model);
+            
+
             model.addAttribute("arquivo1", this.printer1);
             model.addAttribute("arquivo2", this.printer2);
             model.addAttribute("arquivo3", this.printer3);
@@ -96,13 +111,13 @@ public class WebController{
             p.sendFile(file);
             */
           
-           
+            service.files(model);
             printer1="Aquivo: "+file;
             model.addAttribute("arquivo1", this.printer1);
             model.addAttribute("arquivo2", this.printer2);
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
-         
+          
             return "index";
         }
         
@@ -113,14 +128,8 @@ public class WebController{
             System.out.println("Impressora 2 imprimindo:");
             System.out.println(path);
 
-            
-          /*   AQUI TU COLOCA a parte de envio de arquivo
-            SerialPort port = SerialPort.getCommPorts()[0];
-            Printer p = new Printer(port);
-            p.sendFile(file);
-            */
-
-           printer2="Aquivo: "+file;
+            service.files(model);
+            printer2="Aquivo: "+file;
             model.addAttribute("arquivo1", this.printer1);
             model.addAttribute("arquivo2", this.printer2);
             model.addAttribute("arquivo3", this.printer3);
@@ -129,14 +138,63 @@ public class WebController{
             return "index";
         }
         
+        
+    @RequestMapping(value = "/File3", method = RequestMethod.POST)
+        public String File_3(@RequestParam("file3") String file, Model model) {
+          
+            String path = System.getProperty("user.dir")+"\\Files\\"+file;
+            System.out.println("Impressora 3 imprimindo:");
+            System.out.println(path);
+          
+            service.files(model);
+            printer2="Aquivo: "+file;
+            model.addAttribute("arquivo1", this.printer1);
+            model.addAttribute("arquivo2", this.printer2);
+            model.addAttribute("arquivo3", this.printer3);
+            model.addAttribute("arquivo4", this.printer4);
+         
+            return "index";
+        }
+
+    @RequestMapping(value = "/File4", method = RequestMethod.POST)
+        public String File_4(@RequestParam("file4") String file, Model model) {
+          
+            String path = System.getProperty("user.dir")+"\\Files\\"+file;
+            System.out.println("Impressora 4 imprimindo:");
+            System.out.println(path);
+          
+            service.files(model);
+            printer2="Aquivo: "+file;
+            model.addAttribute("arquivo1", this.printer1);
+            model.addAttribute("arquivo2", this.printer2);
+            model.addAttribute("arquivo3", this.printer3);
+            model.addAttribute("arquivo4", this.printer4);
+         
+            return "index";
+        }
 
         @RequestMapping(value = "/AutoHomePrinter", method = RequestMethod.POST)
-        public String AutoHomePrinter1(Model model){
-            
+        public String AutoHomePrinter1(@RequestParam("Home") String printer){
+           
             String home = "G28";
-            this.printers[0].sendInfo(home);
+            switch (printer) {
+                case "Printer1":
+                    this.printers[0].sendInfo(home);
+                    break;
+                case "Printer2":
+                    this.printers[1].sendInfo(home);
+                    break;
+                case "Printer3":
+                   this.printers[2].sendInfo(home);
+                    break;
+                case "Printer4":
+                    this.printers[4].sendInfo(home);
+                    break;
+                default:
+                    break;
+            }
             
-            System.out.println(home);
+            System.out.println(printer);
             
             return "index2";
         
@@ -215,6 +273,29 @@ public class WebController{
             return "index2";
         
         }
+        
+        
+        @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+        public String submit(@RequestParam("file") MultipartFile file, ModelMap modelMap) {
+        modelMap.addAttribute("file", file);
+        System.out.println(file);
+        return "index";
+                }
+        
+        
+        @PostMapping("/upload") 
+        public ResponseEntity<?> handleFileUpload( @RequestParam("file") MultipartFile file ) {
+
+        String fileName = file.getOriginalFilename();
+        try {
+        file.transferTo( new File("C:\\upload\\" + fileName));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } 
+            return ResponseEntity.ok("File uploaded successfully.");
+        }
+
+        
         
         
         
