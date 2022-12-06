@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    
+
+        <meta charset="UTF-8">
+    
+        <link rel="stylesheet" href="style.css">
+        <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://pie-meister.github.io/PieMeister-with-Progress.min.js"></script>
+
+         <script>
+            function ShowIt(){
+               var obj = document.getElementById("home-section");
+               if(obj.style.display == "block")
+                  obj.style.display = "none";
+               else
+                  obj.style.display = "block";
+            };
+         </script>
+
+
+
+
+    
+
+
+
+
+    <body style="background-color: rgba(41, 122, 122, 0.067);">
+     
+        <nav class="nav">   
+      <ul class="mobile-navbar">
+          <div ><span style="color: #fff; margin-left: 10px; margin-top: 20px">MRVN</span></div>
+        <li><a href="#" id="1" class="text-nav"><i class="material-icons" >home</i></a></li>
+        <li><a href="#" id="2" class="text-nav"><i class="material-icons">dashboard</i></a></li>
+      </ul>
+            </nav> 
+        
+        
+        
+        
+        
+        
+        
+       
+        <div class="sidebar">
+            <div class="logo-details">
+                
+              <!--<i class="material-icons">---</i>-->
+                <div class="logo_name">MRVN</div>
+                <i id="btn" ><i class="material-icons" style="float: left;" >print</i></i>
+            </div>
+            <ul class="nav-list">
+
+                <li>
+                    <form th:action="@{/Home}"  method="post">
+                    <a href="#" id="3">
+                      <i class="material-icons" >home</i>
+                      <span class="links_name">Home</span>
+                    </a>
+                     </form>
+                     <span class="tooltip">Home</span>
+                  </li>
+
+    
+            
+                  <li>
+                    <a href="#" id="4">
+                      <i class="material-icons">dashboard</i>
+                      <span class="links_name">Commands</span>
+                    </a>
+                     <span class="tooltip">Commands</span>
+                  </li>
+                 
+                  
+            
+             
+              
+             <li class="profile">
+                 <div class="profile-details">
+                   <div class="name_job">
+                     <div class="name">D. Oliveira</div>
+                     <div class="job"> --- </div>
+                   </div>
+                 </div>
+             </li>
+
+            </ul>
+          </div>
+
+
+          <section class="home-section">
+
+           <div class="content" id="resume">
+
+
+            <div class="box-view" id="printer1">
+              <span class="title">Printer 1: </span>
+             
+           
+            <i name="wifi1" class="material-icons blink" th:text="${wifi1}" style="float: right; margin-right:20px; margin-top:10px; color: aliceblue" ></i>   
+                <div class="resume-view">
+                    <span th:text="${arquivo1}">Arquivo:</span><br>
+                    <span>Status:</span><br> 
+                   
+                </div>
+
+
+                <div class="progress-view" id="Progress_1">
+
+                   <progress-circle color="White" edge=#232333 width="50" id="pc1" >
+                        <progress value="1%" stroke=#696cff name="Progress1"  > </progress>
+                    </progress-circle>
+                </div>
+            
+            
+                <div class="box-send">
+                <form name="input1" th:action="@{/File1}"  method="post">
+                
+                <select th:name="file1" class="select-form" id="dropDownList">
+                    <option value="0">Select File</option>
+                    <option th:each="option : ${files}"  th:value="${option}" th:text="${option}"></option>
+                </select>
+                <button class="bt" href="/" id="bot1"><span>Send File </span></button>
+                <!--<input name="file1"  th:id="input1" class="input-file" type="file" />-->    
+                 </form>
+                   
+              </div>
+            
+            
+
+                
+                
+            </script>
+          
+            </div>
+            
+ 
+                   
+
+               
+               
+               
+               
+
+            <div class="box-view" id="printer2">
+            <span class="title">Printer 2: </span>
+            
+            <i th:text="${wifi2}" class="material-icons blink" style="float: right; margin-right:20px; margin-top:10px; color: aliceblue" ></i>   
+                <div class="resume-view">
+                    <span th:text="${arquivo2}">Arquivo:</span><br>
+                    <span>Status:</span><br> 
+                    
+                   
+            </div>
+
+
+                <div class="progress-view" id="Progress_2">
+                    <progress-circle color="White" edge=#232333 width="50">
+                        <progress value="1%" stroke=#696cff name="Progress2"  > </progress>
+                    </progress-circle>
+                </div>
+            
+            
+            <div class="box-send">
+            <form name="input2" th:action="@{/File2}"  method="post">
+                
+                <select th:name="file2" class="select-form" id="dropDownList">
+                    <option value="0">Select File</option>
+                    <option th:each="option : ${files}"  th:value="${option}" th:text="${option}"></option>
+                </select>
+                <button class="bt" href="/"><span>Send File </span></button>
+                <!--<input name="file1"  th:id="input1" class="input-file" type="file" />-->    
+            </form>
+            </div>
+            
+
+
+            </div>
+
+
+            <div class="box-view" id="printer3" style="display: none">
+            <span class="title">Printer 3: </span> 
+
+            <i class="material-icons blink" style="float: right; margin-right:20px; margin-top:10px; color:rgb(9, 116, 16)" >wifi</i>   
+            <div class="resume-view">
+                <span>Arquivo:</span><br>
+                <span>Status:</span><br> 
+               
+            </div>
+
+
+            <div class="progress-view" id="Progress_3">
+                <progress-circle color="White" edge=#232333 width="50">
+                    <progress value="86%" stroke=#696cff  >Printing...</progress>
+                </progress-circle>
+            </div>
+            
+            
+            <div class="box-send">
+            <form name="input3" th:action="@{/File3}"  method="post">
+                
+                <select th:name="file3" class="select-form" id="dropDownList">
+                    <option value="0">Select File</option>
+                    <option th:each="option : ${files}"  th:value="${option}" th:text="${option}"></option>
+                </select>
+                <button class="bt" href="/"><span>Send File </span></button>
+                <!--<input name="file1"  th:id="input1" class="input-file" type="file" />-->    
+            </form>
+            </div>
+            
+            
+            
+
+            </div>
+
+
+            <div class="box-view" id="printer4" style="display: none">
+            <span class="title">Printer 4: </span>
+
+            <i class="material-icons blink" style="float: right; margin-right:20px; margin-top:10px; color:rgb(212, 48, 48)" >wifi off</i>   
+            <div class="resume-view">
+                <span>Arquivo:</span><br>
+                <span>Status:</span><br> 
+               
+            </div>
+
+
+            <div class="progress-view" id="Progress_4">
+                <progress-circle color="White" edge=#232333 width="50">
+                    <progress value="12%" stroke=#696cff  >Printing...</progress>
+                </progress-circle>
+            </div>
+            
+            
+            <div class="box-send">
+            <form name="input3" th:action="@{/File4}"  method="post">
+                
+                <select th:name="file4" class="select-form" id="dropDownList">
+                    <option value="0">Select File</option>
+                    <option th:each="option : ${files}"  th:value="${option}" th:text="${option}"></option>
+                </select>
+                <button class="bt" href="/"><span>Send File </span></button>
+                <!--<input name="file1"  th:id="input1" class="input-file" type="file" />-->    
+            </form>
+            </div>
+
+        </div>
+            
+             <div class="config-up" >     
+                 <h1 style="color: #fff; text-align: center; font-size: medium">UPLOAD FILES</h1>
+              <input id="fileupload" type="file" name="fileupload" style="margin-left: 20px;"/> 
+              <button id="upload-button" onclick="uploadFile()" class="bt"> Upload </button>
+
+             </div>  
+     
+
+
+
+
+           </div>
+              
+         
+              
+              
+        <div class="content" id="configuration">
+            
+           <div class="box-config" id="config1">
+              <hr>
+               <h2 style="color:#fff; margin-top: -25px; margin-left: 10px; font-size: medium"> 
+                   <span style="color: #33ff00"><span class="material-icons">switch_left</span></span> Movements</h2>
+               <div>
+              <form  th:action="@{/AutoHomePrinter}"  method="post">
+              <button name="Home11" class="bt" style="float: left">Auto Home</button>
+              <input name="Home" value="Printer1" style="display: none">
+              </form>
+               <br> <br> <br> <br>
+               <hr style="width: 50%">
+               <h2 style="color:#fff; margin-top: -25px; margin-left: 10px;font-size: medium"> 
+                   <span style="color: #ff0000"><span class="material-icons">local_fire_department</span></span> Preset Temp</h2>
+                
+   
+              <form name="Home12" th:action="@{/ABSPrinter}"  method="post">
+              <button class="bt" style="float: left">ABS</button>
+              <input name="ABS" value="Printer1" style="display: none">
+              </form>
+               
+               <form name="Home13" th:action="@{/PLAPrinter}"  method="post">
+              <button class="bt" style="float: left">PLA</button>
+              <input name="PLA" value="Printer1" style="display: none">
+              </form> 
+              </div>
+              
+              <div class="axis-box" style="position: relative; margin-top: -160px; height: 240px;">
+                
+               <form style="margin-left: 40px" th:action="@{/MovePrinter}"  method="post">  
+               
+
+               
+                 
+              <input id="passo" name="passo" th:value="${passo}" onchange="javascript:alteraP1(this)" style="text-align: center">   
+                  
+                  
+                 <span id="1x-" th:name="1x-" class="format-text"style="margin-bottom: 50px;margin-left: 95px" >-</span>
+                 
+                  <button id="x1-" style="margin-top: 5px; " ><span class="material-icons" style="color: #fff; font-size: 300%;"  >arrow_circle_left</button>
+                       
+                    
+                  <span class="format-text">Eixo X</span>
+                  
+
+                      
+                  <button id="x1+" ><span class="material-icons" style="color: #fff; font-size: 300%;" >arrow_circle_right</button>
+                   <span id="1x+" name="1x+" class="format-text"style="margin-bottom: 50px;" value="+0.1">-</span> 
+                   
+                     <br><br>
+                 
+                   <span id="1y-" name="1y-" class="format-text"style="margin-bottom: 50px;margin-left: 290px" value="-0.1">-</span>
+                 
+                  <button id="y1-" style="margin-top: 5px; " ><span class="material-icons" style="color: #fff; font-size: 300%;" >arrow_circle_left</button>
+                       
+                    
+                  <span class="format-text">Eixo Y</span>
+                  
+
+                      
+                  <button id="y1+" ><span class="material-icons" style="color: #fff; font-size: 300%;" >arrow_circle_right</button>
+                   <span id="1y+" name="1y+" class="format-text"style="margin-bottom: 50px;" value="+0.1">-</span> 
+                   
+                   <br><br>
+                   
+                 <span id="1z-" class="format-text"style="margin-bottom: 50px;margin-left: 290px" value="-0.1">-</span>
+                 
+                  <button id="z1-" name="1z-" style="margin-top: 5px; " ><span class="material-icons" style="color: #fff; font-size: 300%;" >arrow_circle_left</button>
+                       
+                    
+                  <span class="format-text">Eixo Z</span>
+                  
+
+                      
+                  <button id="z1+" ><span class="material-icons" style="color: #fff; font-size: 300%;" >arrow_circle_right</button>
+                   <span id="1z+" name="1z+" class="format-text"style="margin-bottom: 50px;" value="+0.1">-</span> 
+                   
+                   
+                   
+                   <input id="xp1" name="x" style="display: none"></input>
+                 </form>
+                  
+ 
+                  
+                  
+                  
+                  
+
+                  
+         <script type="text/javascript">
+
+             function alteraP1(e){
+                 document.getElementById("1x+").innerHTML = "+"+e.value;
+                 document.getElementById("1x-").innerHTML = "-"+e.value;
+                 
+                 document.getElementById("1y+").innerHTML = "+"+e.value;
+                 document.getElementById("1y-").innerHTML = "-"+e.value;
+                 
+                 document.getElementById("1z+").innerHTML = "+"+e.value;
+                 document.getElementById("1z-").innerHTML = "-"+e.value;
+                 
+                  localStorage.setItem(passo, e.value);
+
+             }
+             
+             
+             function directionXright(){
+              
+                 document.getElementById("xp1").setAttribute('value', 'Printerx1-');
+                
+             }          
+             function directionXleft(){
+                 document.getElementById("xp1").setAttribute('value', 'Printerx1+');
+                
+             } 
+    
+    
+             var elementox1 = document.getElementById("x1-"); 
+             elementox1.addEventListener('mouseover', directionXright);
+             
+             var elementox2 = document.getElementById("x1+"); 
+             elementox2.addEventListener('mouseover', directionXleft); 
+             
+             
+             function directionYright(){
+              
+                 document.getElementById("xp1").setAttribute('value', 'Printery1-');
+                
+             }          
+             function directionYleft(){
+                 document.getElementById("xp1").setAttribute('value', 'Printery1+');
+                
+             } 
+    
+    
+             var elementox1 = document.getElementById("y1-"); 
+             elementox1.addEventListener('mouseover', directionYright);
+             
+             var elementox2 = document.getElementById("y1+"); 
+             elementox2.addEventListener('mouseover', directionYleft); 
+             
+             
+             function directionZright(){
+              
+                 document.getElementById("xp1").setAttribute('value', 'Printerz1-');
+                
+             }          
+             function directionZleft(){
+                 document.getElementById("xp1").setAttribute('value', 'Printerz1+');
+                
+             } 
+    
+    
+             var elementox1 = document.getElementById("z1-"); 
+             elementox1.addEventListener('mouseover', directionZright);
+             
+             var elementox2 = document.getElementById("z1+"); 
+             elementox2.addEventListener('mouseover', directionZleft); 
+             
+              window.onbeforeunload = function(){
+                 localStorage.setItem(passo, document.getElementById("passo").value);
+                 var passo = localStorage.getItem(passo);
+                 //window.alert(passo);
+                  
+              }  
+             
+             
+             
+             window.onload = function(){
+                 
+                 var p = passo.value;
+                 document.getElementById("1x+").innerHTML = "+"+p;
+                 document.getElementById("1x-").innerHTML = "-"+p;
+                 
+                 document.getElementById("1y+").innerHTML = "+"+p;
+                 document.getElementById("1y-").innerHTML = "-"+p;
+                 
+                 document.getElementById("1z+").innerHTML = "+"+p;
+                 document.getElementById("1z-").innerHTML = "-"+p;  
+        
+             };
+         
+         </script>          
+               
+
+           
+            
+          </div>
+
+          
+              <div class="box-config" id="config2" style="width: 100%; margin-left: 0px">
+ <hr>
+               <h2 style="color:#fff; margin-top: -25px; margin-left: 10px;font-size: medium"> 
+                   <span style="color: #33ff00"><span class="material-icons">switch_left</span></span> Movements</h2>
+               <div>
+                   
+              <form  th:action="@{/AutoHomePrinter}"  method="post">
+              <button name="Home11" class="bt" style="float: left">Auto Home</button>
+              <input name="Home" value="Printer2" style="display: none">
+              </form>
+                   
+               <br> <br> <br> <br>
+               <hr style="width: 50%">
+               <h2 style="color:#fff; margin-top: 10px; margin-left: 10px; font-size: medium"> 
+                   <span style="color: #ff0000"><span class="material-icons">local_fire_department</span></span> Preset Temp</h2>
+                
+   
+              <form name="Home12" th:action="@{/ABSPrinter}"  method="post">
+              <button class="bt" style="float: left">ABS</button>
+              <input name="ABS" value="Printer2" style="display: none">
+              </form>
+               
+               <form name="Home13" th:action="@{/PLAPrinter}"  method="post">
+              <button class="bt" style="float: left">PLA</button>
+              <input name="PLA" value="Printer1" style="display: none">
+              </form> 
+              </div>
+              
+              <div class="axis-box" style="position: relative; margin-top: -180px; height: 240px;">
+                
+               <form style="margin-left: 40px" th:action="@{/MovePrinter}"  method="post">  
+               
+
+               
+                 
+              <input id="passo" name="passo" th:value="${passo}" onchange="javascript:alteraP2(this)" style="text-align: center">   
+                  
+                  
+                 <span id="2x-" th:name="2x-" class="format-text"style="margin-bottom: 50px;margin-left: 95px" >-</span>
+                 
+                  <button id="x2-" style="margin-top: 5px; " ><span class="material-icons" style="color: #fff; font-size: 300%;"  >arrow_circle_left</button>
+                       
+                    
+                  <span class="format-text">Eixo X</span>
+                  
+
+                      
+                  <button id="x2+" ><span class="material-icons" style="color: #fff; font-size: 300%;" >arrow_circle_right</button>
+                   <span id="2x+" name="2x+" class="format-text"style="margin-bottom: 50px;" value="+0.1">-</span> 
+                   
+                     <br><br>
+                 
+                   <span id="2y-" name="2y-" class="format-text"style="margin-bottom: 50px;margin-left: 290px" value="-0.1">-</span>
+                 
+                  <button id="y2-" style="margin-top: 5px; " ><span class="material-icons" style="color: #fff; font-size: 300%;" >arrow_circle_left</button>
+                       
+                    
+                  <span class="format-text">Eixo Y</span>
+                  
+
+                      
+                  <button id="y2+" ><span class="material-icons" style="color: #fff; font-size: 300%;" >arrow_circle_right</button>
+                   <span id="2y+" name="1y+" class="format-text"style="margin-bottom: 50px;" value="+0.1">-</span> 
+                   
+                   <br><br>
+                   
+                 <span id="2z-" class="format-text"style="margin-bottom: 50px;margin-left: 290px" value="-0.1">-</span>
+                 
+                  <button id="z2-" name="2z-" style="margin-top: 5px; " ><span class="material-icons" style="color: #fff; font-size: 300%;" >arrow_circle_left</button>
+                       
+                    
+                  <span class="format-text">Eixo Z</span>
+                  
+
+                      
+                  <button id="z2+" ><span class="material-icons" style="color: #fff; font-size: 300%;" >arrow_circle_right</button>
+                   <span id="2z+" name="2z+" class="format-text"style="margin-bottom: 50px;" value="+0.1">-</span> 
+                   
+                   
+                   
+                   <input id="xp2" name="x" style="display: none"></input>
+                 </form>
+
+         <script type="text/javascript">
+
+             function alteraP2(e){
+                 document.getElementById("2x+").innerHTML = "+"+e.value;
+                 document.getElementById("2x-").innerHTML = "-"+e.value;
+                 
+                 document.getElementById("2y+").innerHTML = "+"+e.value;
+                 document.getElementById("2y-").innerHTML = "-"+e.value;
+                 
+                 document.getElementById("2z+").innerHTML = "+"+e.value;
+                 document.getElementById("2z-").innerHTML = "-"+e.value;
+                 
+                  localStorage.setItem(passo1, e.value);
+
+             }
+             
+             
+             function directionXright(){
+              
+                 document.getElementById("xp2").setAttribute('value', 'Printerx2-');
+                
+             }          
+             function directionXleft(){
+                 document.getElementById("xp2").setAttribute('value', 'Printerx2+');
+                
+             } 
+    
+    
+             var elementox1 = document.getElementById("x2-"); 
+             elementox1.addEventListener('mouseover', directionXright);
+             
+             var elementox2 = document.getElementById("x2+"); 
+             elementox2.addEventListener('mouseover', directionXleft); 
+             
+             
+             function directionYright(){
+              
+                 document.getElementById("xp2").setAttribute('value', 'Printery2-');
+                
+             }          
+             function directionYleft(){
+                 document.getElementById("xp2").setAttribute('value', 'Printery2+');
+                
+             } 
+    
+    
+             var elementox1 = document.getElementById("y2-"); 
+             elementox1.addEventListener('mouseover', directionYright);
+             
+             var elementox2 = document.getElementById("y2+"); 
+             elementox2.addEventListener('mouseover', directionYleft); 
+             
+             
+             function directionZright(){
+              
+                 document.getElementById("xp2").setAttribute('value', 'Printerz1-');
+                
+             }          
+             function directionZleft(){
+                 document.getElementById("xp2").setAttribute('value', 'Printerz1+');
+                
+             } 
+    
+    
+             var elementox1 = document.getElementById("z2-"); 
+             elementox1.addEventListener('mouseover', directionZright);
+             
+             var elementox2 = document.getElementById("z2+"); 
+             elementox2.addEventListener('mouseover', directionZleft); 
+             
+              window.onbeforeunload = function(){
+                 localStorage.setItem(passo, document.getElementById("passo").value);
+                 var passo = localStorage.getItem(passo);
+                 //window.alert(passo);
+                  
+              }  ;
+             
+             
+             
+             window.onload = function(){
+                 
+                 var p = passo1.value;
+                 document.getElementById("2x+").innerHTML = "+"+p;
+                 document.getElementById("2x-").innerHTML = "-"+p;
+                 
+                 document.getElementById("2y+").innerHTML = "+"+p;
+                 document.getElementById("2y-").innerHTML = "-"+p;
+                 
+                 document.getElementById("2z+").innerHTML = "+"+p;
+                 document.getElementById("2z-").innerHTML = "-"+p;  
+        
+             };
+         
+         </script>                   
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+          </div>
+          
+            
+          <div class="box-config" id="config3" style="display:none">
+              
+      
+            
+          </div>
+          
+          <div class="box-config" id="config4" style="display:none">
+              
+          
+           
+            
+          </div>
+            
+            
+         <div class="box-config-m" id="config1mobile">
+               <h2 style="color:#fff; margin-top: 10px; margin-left: 10px;">Comandos Rápidos Printer 1 - Mobile</h2>
+              
+              <form  th:action="@{/AutoHomePrinter}"  method="post">
+              <button name="Home11" class="bt" style="float: left">Auto Home</button>
+              <input name="Home" value="Printer1" style="display: none">
+              </form>
+               
+              <form name="Home12" th:action="@{/ABSPrinter}"  method="post">
+              <button class="bt" style="float: left">ABS</button>
+               <input name="ABS" value="Printer1" style="display: none">
+              </form>
+               
+               <form name="Home13" th:action="@{/PLAPrinter}"  method="post">
+              <button class="bt" style="float: left">PLA</button>
+               <input name="PLA" value="Printer1" style="display: none">
+               </form> 
+              
+              
+              <div class="axis-box">
+                 
+              <form name="xyz" th:action="@{/MovePrinterMobile}"  method="post">
+              <label class="format-text">Eixo X</label>
+              <input style="margin-left: 10px; margin-top: 20px; border-radius: 10px; " name="x"  th:id="input1" class="input-file" type="number" min="0" step="1" value="100"/><br><br>
+              <label class="format-text">Eixo Y</label>
+              <input style="margin-left: 10px; margin-top: 20px; border-radius: 10px; " name="y"  th:id="input1" class="input-file" type="number" min="0" step="1" value="100"/> <br> <br>
+              <label class="format-text">Eixo Z</label>
+              <input style="margin-left: 10px; margin-top: 20px; border-radius: 10px;" name="z"  th:id="input1" class="input-file" type="number" min="0" step="1" value="100"/>
+              <button class="bt" style="float: right">Set Position</button>
+              </form>
+              </div>
+               
+
+           
+            
+          </div>   
+            
+            
+         <div class="box-config-m" id="config1mobile2">
+             
+          
+             
+         <!--    
+             <div class="axis-box">
+             
+             <span class="material-icons" style="
+                         color: #fff; 
+                        font-size: 500%;
+                        margin-left: 140px;
+                        margin-top: 100px;
+                                                " >
+                 arrow_circle_up
+             </span>
+             <br>
+             <span class="material-icons" style="
+                         color: #fff; 
+                        font-size: 500%;
+                        margin-left: 50px;
+                                                " >
+                 arrow_circle_left
+             </span>
+           
+            <form  th:action="@{/AutoHomePrinter}"  method="post"> 
+                <button><span class="material-icons" style="
+                         color: #fff; 
+                        font-size: 500%; ">
+                    check_box_outline_blank
+                    </span></button>
+                <input name="Home" value="Printer2" style="display: none">
+            </form>
+            
+            <span class="material-icons" style="
+                         color: #fff; 
+                        font-size: 500%;
+                        margin-left: 0px;
+                                                " >
+                 arrow_circle_right
+             </span>
+ 
+             
+            <span class="material-icons" style="
+                         color: #fff; 
+                        font-size: 500%;
+                        margin-left: 140px;
+                                                " >
+                 arrow_circle_down
+             </span>
+              
+             </div>
+               
+              </div>
+               -->
+
+           
+            
+          </div> 
+            
+         
+                  
+                  
+                
+         </div>
+      
+         
+         
+         
+             
+         </section>
+          
+         
+         
+         
+         
+
+        
+        
+        <<script type="text/javascript">
+            
+            
+         
+                 document.getElementById("resume").style.display = "none";
+                 document.getElementById("configuration").style.display = "inline";
+                 
+         
+       
+        </script>
+         
+         
+         
+         
+         
+
+         
+           <script type="text/javascript">
+             document.getElementById("1").onclick = function() {
+         
+                 document.getElementById("resume").style.display = "inline";
+                 document.getElementById("configuration").style.display = "none";
+                 
+         
+             };
+
+             document.getElementById("2").onclick = function() {
+         
+             document.getElementById("resume").style.display = "none";
+             document.getElementById("configuration").style.display = "inline";
+         
+ 
+     };
+         
+         
+         
+         
+         </script>
+
+           <script type="text/javascript">
+             document.getElementById("3").onclick = function() {
+         
+                 document.getElementById("resume").style.display = "inline";
+                 document.getElementById("configuration").style.display = "none";
+                 
+         
+             };
+
+             document.getElementById("4").onclick = function() {
+         
+             document.getElementById("resume").style.display = "none";
+             document.getElementById("configuration").style.display = "inline";
+         
+ 
+     };
+         
+         
+         
+         
+         </script>
+           
+         
+         
+           <script>
+           let sidebar = document.querySelector(".sidebar");
+           let closeBtn = document.querySelector("#btn");
+           let searchBtn = document.querySelector(".bx-search");
+         
+           closeBtn.addEventListener("click", ()=>{
+             sidebar.classList.toggle("open");
+             menuBtnChange();//calling the function(optional)
+           });
+         
+           searchBtn.addEventListener("click", ()=>{ // Sidebar open when you click on the search iocn
+             sidebar.classList.toggle("open");
+             menuBtnChange(); //calling the function(optional)
+           });
+         
+           // following are the code to change sidebar button(optional)
+           function menuBtnChange() {
+            if(sidebar.classList.contains("open")){
+              closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class
+            }else {
+              closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
+            }
+           }
+           </script>
+         
+                     <!-- Ajax JavaScript File Upload to Spring Boot Logic -->
+            <script>
+                async function uploadFile() {
+                let formData = new FormData(); 
+                formData.append("file", fileupload.files[0]);
+                let response = await fetch('/upload', {
+                method: "POST", 
+                body: formData
+            }); 
+
+                if (response.status == 200) {
+                alert("File successfully uploaded.");
+                }
+}
+             </script>
+         
+         
+         
+        
+        
+
+    </body>
+
+
+</html>
+
