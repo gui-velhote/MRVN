@@ -40,6 +40,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -59,8 +61,10 @@ public class WebController implements DataListener{
         private PrinterData[] printersData;
         private Connection conn = new Connection();
         private int sizePrinter = 0;
+        private int percentage = 1;
         
-          
+        private Model mod;
+        
          @Autowired
          private WebConfig service;
           
@@ -77,10 +81,23 @@ public class WebController implements DataListener{
             this.sizePrinter = this.printers.length;
             
         }
-   
+   /*
+        @GetMapping("/redirectWithRedirectView")
+        public RedirectView redirectWithUsingRedirectView(RedirectAttributes attributes) {
+            attributes.addFlashAttribute("flashAttribute", "redirectWithRedirectView");
+            attributes.addAttribute("attribute", "redirectWithRedirectView");
+            return new RedirectView("redirectedUrl");
+        }*/
+        
         @RequestMapping(value = "/", method = RequestMethod.GET)
         public String Refresh(Model model){
-   
+            /*
+            for(int i=0;i<this.printers.length;i++){
+                this.printersData[i] = this.printers[i].getPrinterData();
+            }
+            */
+            
+            
              service.files(model);
              
             this.printers = conn.getPrinters();
@@ -88,7 +105,9 @@ public class WebController implements DataListener{
             
             if(sizePrinter >= 1){
                model.addAttribute("wifi1", "wifi");
-               model.addAttribute("wifi2", "wifi"); 
+               //model.addAttribute("bico", "Status: " + String.valueOf(this.printers[0].getPrinterData().getTipTemp()));
+               //System.out.println("Status: " + this.printers[0].getPrinterData().getTipTemp());
+               //model.addAttribute("percentage1", this.percentage + "%");
             } 
             else{
                model.addAttribute("wifi1", "wifi_off");
@@ -144,7 +163,7 @@ public class WebController implements DataListener{
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
           
-            return "index";
+            return "redirect:/";
         }
         
     @RequestMapping(value = "/File2", method = RequestMethod.POST)
@@ -163,7 +182,7 @@ public class WebController implements DataListener{
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
          
-            return "index";
+            return "redirect:/";
         }
         
         
@@ -181,7 +200,7 @@ public class WebController implements DataListener{
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
          
-            return "index";
+            return "redirect:/";
         }
 
     @RequestMapping(value = "/File4", method = RequestMethod.POST)
@@ -198,7 +217,7 @@ public class WebController implements DataListener{
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
          
-            return "index";
+            return "redirect:/";
         }
 
         @RequestMapping(value = "/AutoHomePrinter", method = RequestMethod.POST)
@@ -436,8 +455,8 @@ public class WebController implements DataListener{
         public String submit(@RequestParam("file") MultipartFile file, ModelMap modelMap) {
         modelMap.addAttribute("file", file);
         System.out.println(file);
-        return "index";
-                }
+            return "redirect:/";
+        }
         
         
         @PostMapping("/upload") 
@@ -455,37 +474,24 @@ public class WebController implements DataListener{
         }
 
         
-        @RequestMapping(value = "/Progress1", method = RequestMethod.GET)
-        public String setPercentage(@RequestParam("progress") int percentage,  Printer pd){
+        @RequestMapping(name = "/Progress1", method = RequestMethod.GET)
+        public String setPercentage(@RequestParam("percentage1") String percentage){
             
-            
-            
-            
-            return "index";
+            return (percentage);
         }
         
         @Override
         public void tempChange(int index, PrinterData pd){
-            switch(index){
-                case 0:
-                    /* Coloca aqui a forma de colocar os dados na interface
-                        this.printersData[index] = pd;
-                        temperatura bico = pd.getTipTemp();
-                        temperatura final bico = pd.getTipFinalTemp();
-                        temperatura base = pd.getBaseTemp();
-                        temperatura final base = pd.getBaseFinalTemp();
-                    */
-                    break;
-            }
+            this.printersData[index] = pd;
         }
-        
         
         @Override
         public void percentageChange(int index, PrinterData pd){
             
            switch(index){
                case 0:
-                   //setPercentage(pd);
+                   this.percentage = pd.getPrinterPercentage() + 1;
+                   setPercentage(String.valueOf(this.percentage) + "%");
                    break;
            }
            

@@ -203,9 +203,8 @@ public class SendCommand extends Thread implements CommandListener {
             //sendInfo("G28");
         }
         else{
-            this.printPercentage = 100*(this.nextFileLine / this.fileLines.size());
-            this.printer.getPrinterData().setPrinterPercentage(this.printPercentage);
-            this.printer.percentageChange();
+            this.printPercentage = (this.nextFileLine * 100 / this.fileLines.size());
+            this.printer.percentageChange(this.printPercentage);
             
             System.out.println("Print percentage = " + this.printPercentage + "%");
             

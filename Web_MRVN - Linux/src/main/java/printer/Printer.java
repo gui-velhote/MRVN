@@ -51,7 +51,7 @@ public class Printer implements SerialPortDataListener{
         this.CONN_PORT.addDataListener(this);
         this.CONN_PORT.openPort(); //opens port
         sendInfo("M20");
-        
+        sendInfo("M105");
         
     }
     
@@ -139,7 +139,8 @@ public class Printer implements SerialPortDataListener{
         return this.CONN_PORT;
     }
     
-    public void percentageChange(){
+    public void percentageChange(int percentage){
+        this.printerData.setPrinterPercentage(percentage);
         for(DataListener d : this.TempDataListeners){
             d.percentageChange(this.INDEX, this.printerData);
         }
@@ -194,7 +195,7 @@ public class Printer implements SerialPortDataListener{
                     try {
                         //this.recieved = 0;
                         
-                        this.sendCommand.sleep(200);
+                        this.sendCommand.sleep(100);
                         
                         System.out.println("Error Line");
                         int line = Integer.valueOf(matchError.group().replaceAll("[^0-9]+",""));

@@ -3,6 +3,7 @@
     
 
         <meta charset="UTF-8">
+        <meta http-equiv="refresh" content="10">
     
         <link rel="stylesheet" href="style.css">
         <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
@@ -107,7 +108,7 @@
             <i name="wifi1" class="material-icons blink" th:text="${wifi1}" style="float: right; margin-right:20px; margin-top:10px; color: aliceblue" ></i>   
                 <div class="resume-view">
                     <span th:text="${arquivo1}">Arquivo:</span><br>
-                    <span>Status:</span><br> 
+                    <span th:text="${bico}">Status:</span><br> 
                    
                 </div>
 
@@ -115,7 +116,7 @@
                 <div class="progress-view" id="Progress_1">
 
                    <progress-circle color="White" edge=#232333 width="50" id="pc1" >
-                        <progress value="1%" stroke=#696cff name="Progress1"  > </progress>
+                        <progress th:value="1%" stroke=#696cff name="Progress1"  > </progress>
                     </progress-circle>
                 </div>
             
