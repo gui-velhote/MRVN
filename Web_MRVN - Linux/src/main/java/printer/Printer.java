@@ -41,7 +41,7 @@ public class Printer implements SerialPortDataListener{
     private ArrayList<String> filesInSD = new ArrayList();
     private ArrayList<PrinterDisconnectListener> disconnectListener = new ArrayList();
     private PrinterData printerData;
-    private int sendError = 0;
+    
     
     private SendCommand sendCommand;
     
@@ -84,7 +84,7 @@ public class Printer implements SerialPortDataListener{
     
     public void sendInfo(String gcode){
         
-        this.sendCommand = new SendCommand(this.CONN_PORT, gcode, 0);
+        this.sendCommand = new SendCommand(this.CONN_PORT, gcode, 0, this);
         this.sendCommand.start();
     }
     
@@ -92,7 +92,7 @@ public class Printer implements SerialPortDataListener{
         
         this.printFile = 1;
                 
-        this.sendCommand = new SendCommand(this.CONN_PORT, filePath, 1);
+        this.sendCommand = new SendCommand(this.CONN_PORT, filePath, 1, this);
         addCommandListener(this.sendCommand);
         this.sendCommand.start();
         
@@ -111,16 +111,16 @@ public class Printer implements SerialPortDataListener{
             if(filePathName.equals(filesSDName)){
                 System.out.println("file in SD Card: " + filesSDName);
                
-                this.sendCommand = new SendCommand(this.CONN_PORT, "M23" + filesSDName.toUpperCase() + ".GCO", 0);
+                this.sendCommand = new SendCommand(this.CONN_PORT, "M23" + filesSDName.toUpperCase() + ".GCO", 0, this);
                 this.sendCommand.start();
-                this.sendCommand = new SendCommand(this.CONN_PORT, "M24", 0);
+                this.sendCommand = new SendCommand(this.CONN_PORT, "M24", 0, this);
                 this.sendCommand.start();
                 
                 return;
             }
         }
         
-        this.sendCommand = new SendCommand(this.CONN_PORT, filePath, 2);
+        this.sendCommand = new SendCommand(this.CONN_PORT, filePath, 2, this);
         this.sendCommand.start();
         
     }
@@ -137,6 +137,12 @@ public class Printer implements SerialPortDataListener{
     
     public SerialPort getCONN_PORT(){
         return this.CONN_PORT;
+    }
+    
+    public void percentageChange(){
+        for(DataListener d : this.TempDataListeners){
+            d.percentageChange(this.INDEX, this.printerData);
+        }
     }
     
     @Override
@@ -196,7 +202,7 @@ public class Printer implements SerialPortDataListener{
                         
                         String fileLine = this.sendCommand.getFileLine(line - 1);
                         
-                        (new SendCommand(this.CONN_PORT, fileLine, 0)).start();
+                        (new SendCommand(this.CONN_PORT, fileLine, 0, this)).start();
                         this.printFile = 1;
                         Thread.sleep(100);
                         

@@ -23,17 +23,20 @@ public class SendCommand extends Thread implements CommandListener {
     private final SerialPort CONN_PORT;
     private final String INPUT_STRING;
     private final int mode;
+    private final Printer printer;
     
     private int printing;
     private int nextFileLine;
     private ArrayList<String> fileLines;
+    private int printPercentage;
     
-    public SendCommand(SerialPort connPort, String gcode, int mode){
+    public SendCommand(SerialPort connPort, String gcode, int mode, Printer p){
         this.CONN_PORT = connPort;
         this.INPUT_STRING = gcode;
         this.mode = mode;
         this.printing = 0;
         this.nextFileLine = 0;
+        this.printer = p;
     }
     
     public ArrayList<String> readFile(File file){
@@ -108,6 +111,8 @@ public class SendCommand extends Thread implements CommandListener {
             this.printing = 1;
             
             this.nextFileLine = 0;
+            this.printPercentage = 0;
+            
             readFile(new File(filePath));
             
             sendInfo("M110 N0");
@@ -198,6 +203,12 @@ public class SendCommand extends Thread implements CommandListener {
             //sendInfo("G28");
         }
         else{
+            this.printPercentage = 100*(this.nextFileLine / this.fileLines.size());
+            this.printer.getPrinterData().setPrinterPercentage(this.printPercentage);
+            this.printer.percentageChange();
+            
+            System.out.println("Print percentage = " + this.printPercentage + "%");
+            
             System.out.println("Sending: " + this.fileLines.get(this.nextFileLine));
             sendInfo(this.fileLines.get(this.nextFileLine));
             this.nextFileLine++;

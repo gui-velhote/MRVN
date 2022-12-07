@@ -22,6 +22,7 @@ public class PrinterData {
     private double baseTemp;
     private double tipFinalTemp;
     private double baseFinalTemp;
+    private int printPercentage = 0;
     
     private double xAxis;
     private double yAxis;
@@ -42,6 +43,10 @@ public class PrinterData {
         this.baseTemp = dataList.get(2);
         this.baseFinalTemp = dataList.get(3);
         
+    }
+    
+    public void setPrinterPercentage(int percentage){
+        this.printPercentage = percentage;
     }
     
     public void setPrinterName(String name){

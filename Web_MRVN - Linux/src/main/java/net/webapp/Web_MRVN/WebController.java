@@ -455,7 +455,14 @@ public class WebController implements DataListener{
         }
 
         
-        
+        @RequestMapping(value = "/Progress1", method = RequestMethod.GET)
+        public String setPercentage(@RequestParam("progress") int percentage,  Printer pd){
+            
+            
+            
+            
+            return "index";
+        }
         
         @Override
         public void tempChange(int index, PrinterData pd){
@@ -473,7 +480,16 @@ public class WebController implements DataListener{
         }
         
         
-    
+        @Override
+        public void percentageChange(int index, PrinterData pd){
+            
+           switch(index){
+               case 0:
+                   //setPercentage(pd);
+                   break;
+           }
+           
+        }
      
     
     
