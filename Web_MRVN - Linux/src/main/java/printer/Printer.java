@@ -32,6 +32,7 @@ public class Printer implements SerialPortDataListener{
     private final Pattern FILE_OPEN_FAILED = Pattern.compile("open failed");
     private final Pattern FILE_CODE = Pattern.compile("^N[0-9]+");
     private final Pattern FILE_IN_SD = Pattern.compile(".*[.].*[ ]");
+    private final int INDEX;
     
     private String data;
     private int printFile;
@@ -40,6 +41,7 @@ public class Printer implements SerialPortDataListener{
     private ArrayList<String> filesInSD = new ArrayList();
     private ArrayList<PrinterDisconnectListener> disconnectListener = new ArrayList();
     private PrinterData printerData;
+    private int sendError = 0;
     
     private SendCommand sendCommand;
     
@@ -50,6 +52,7 @@ public class Printer implements SerialPortDataListener{
         this.CONN_PORT.openPort(); //opens port
         sendInfo("M20");
         
+        
     }
     
     private void initializeVariables(){
@@ -58,8 +61,9 @@ public class Printer implements SerialPortDataListener{
         this.printerData = new PrinterData();
     }
     
-    public Printer(SerialPort connPort){
+    public Printer(int index, SerialPort connPort){
         
+        this.INDEX = index;
         this.CONN_PORT = connPort;
         setupPrinter();
         initializeVariables();
@@ -87,7 +91,7 @@ public class Printer implements SerialPortDataListener{
     public void printFile(String filePath){
         
         this.printFile = 1;
-        
+                
         this.sendCommand = new SendCommand(this.CONN_PORT, filePath, 1);
         addCommandListener(this.sendCommand);
         this.sendCommand.start();
@@ -180,17 +184,20 @@ public class Printer implements SerialPortDataListener{
                 }
                 
                 if(matchError.find()){
+                    this.printFile = 0;
                     try {
                         //this.recieved = 0;
+                        
+                        this.sendCommand.sleep(200);
+                        
                         System.out.println("Error Line");
                         int line = Integer.valueOf(matchError.group().replaceAll("[^0-9]+",""));
                         System.out.println(line);
                         
                         String fileLine = this.sendCommand.getFileLine(line - 1);
                         
-                        this.sendCommand.sleep(100);
                         (new SendCommand(this.CONN_PORT, fileLine, 0)).start();
-                        
+                        this.printFile = 1;
                         Thread.sleep(100);
                         
                     } catch (InterruptedException ex) {
@@ -212,7 +219,7 @@ public class Printer implements SerialPortDataListener{
                         this.printerData.parseData(this.data);
                         
                         for(DataListener dl : this.TempDataListeners){
-                            dl.tempChange(this.printerData);
+                            dl.tempChange(this.INDEX, this.printerData);
                         }
                         
                         Thread.sleep(100);

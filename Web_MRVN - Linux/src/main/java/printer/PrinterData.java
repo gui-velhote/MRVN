@@ -23,6 +23,10 @@ public class PrinterData {
     private double tipFinalTemp;
     private double baseFinalTemp;
     
+    private double xAxis;
+    private double yAxis;
+    private double zAxis;
+    
     public void parseData(String data){
         
         ArrayList<Double> dataList = new ArrayList();

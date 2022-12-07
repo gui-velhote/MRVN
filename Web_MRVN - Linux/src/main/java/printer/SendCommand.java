@@ -33,6 +33,7 @@ public class SendCommand extends Thread implements CommandListener {
         this.INPUT_STRING = gcode;
         this.mode = mode;
         this.printing = 0;
+        this.nextFileLine = 0;
     }
     
     public ArrayList<String> readFile(File file){
@@ -106,14 +107,15 @@ public class SendCommand extends Thread implements CommandListener {
         try {
             this.printing = 1;
             
+            this.nextFileLine = 0;
             readFile(new File(filePath));
             
             sendInfo("M110 N0");
             
             Thread.sleep(10);
             
-            sendInfo(this.fileLines.get(0));
-            this.nextFileLine = 1;
+            //sendInfo(this.fileLines.get(0));
+            
         } catch (InterruptedException ex) {
             Logger.getLogger(SendCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -179,11 +181,15 @@ public class SendCommand extends Thread implements CommandListener {
  
     @Override
     public void sentCommand(){
-        
+        /*
         System.out.println("Listened");
         
         System.out.println("Line: " + this.nextFileLine);
         System.out.println("Size: " + this.fileLines.size());
+        */
+        
+        System.out.println("Next line: " + this.nextFileLine);
+        System.out.println("File size: " + this.fileLines.size());
         
         if(this.nextFileLine == this.fileLines.size()){
             this.nextFileLine = 0;

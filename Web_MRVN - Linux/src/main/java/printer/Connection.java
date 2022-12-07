@@ -22,6 +22,9 @@ public class Connection extends Thread implements PrinterDisconnectListener{
         if(System.getProperty("os.name").contains("Windows")){
             this.comPortName = "CH340";
         }
+        else{
+            this.comPortName = "USB Serial";
+        }
     }
     
     public Printer getPrinter(int index){
@@ -38,12 +41,14 @@ public class Connection extends Thread implements PrinterDisconnectListener{
         System.out.println("Running");
         while(true){
             if(this.printers.size() == 0){
+                int i=0;
                 for(SerialPort s : SerialPort.getCommPorts()){
                     System.out.println(s.getDescriptivePortName());
                     if(s.getDescriptivePortName().contains(this.comPortName)){
-                        Printer p = new Printer(s);
+                        Printer p = new Printer(i,s);
                         p.addDisconnectListener(this);
                         this.printers.add(p);
+                        i++;
                     }
                 }
                 System.out.println("Printer Connected Size: " + this.printers.size());
@@ -74,7 +79,7 @@ public class Connection extends Thread implements PrinterDisconnectListener{
                         if(match == 0){
                             System.out.println("Printer Connected Size: " + this.printers.size());
                             this.connectedPrinters = this.printers.size();
-                            Printer p = new Printer(serialPorts.get(i));
+                            Printer p = new Printer(this.printers.size(), serialPorts.get(i));
                             p.addDisconnectListener(this);
                             this.printers.add(p);
                         }

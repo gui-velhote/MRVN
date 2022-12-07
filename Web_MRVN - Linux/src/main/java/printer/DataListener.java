@@ -10,6 +10,6 @@ package printer;
  */
 public interface DataListener {
     
-    public void tempChange(PrinterData pd);
+    public void tempChange(int index, PrinterData pd);
     
 }

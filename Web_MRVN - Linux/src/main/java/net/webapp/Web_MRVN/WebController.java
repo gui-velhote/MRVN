@@ -40,14 +40,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.DispatcherServlet;
-
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  *
  * @author Diego Oliveira
  */
 @Controller
-public class WebController{
+public class WebController implements DataListener{
     
         private  String passo = "0.10";
         private  String printer1 = "Arquivo: ";
@@ -55,6 +56,7 @@ public class WebController{
         private  String printer3 = "Arquivo: ";
         private  String printer4 = "Arquivo: ";
         private Printer[] printers;
+        private PrinterData[] printersData;
         private Connection conn = new Connection();
         private int sizePrinter = 0;
         
@@ -63,9 +65,16 @@ public class WebController{
          private WebConfig service;
           
         public WebController() {
-            //conn.run();
+            conn.start();
             this.printers = conn.getPrinters();
-    
+            
+            this.printersData = new PrinterData[this.printers.length];
+            
+            for(int i=0;i<this.printers.length;i++){
+                this.printersData[i] = this.printers[i].getPrinterData();
+            }
+            
+            this.sizePrinter = this.printers.length;
             
         }
    
@@ -74,6 +83,8 @@ public class WebController{
    
              service.files(model);
              
+            this.printers = conn.getPrinters();
+            this.sizePrinter = this.printers.length;
             
             if(sizePrinter >= 1){
                model.addAttribute("wifi1", "wifi");
@@ -112,12 +123,12 @@ public class WebController{
         
     @RequestMapping(value = "/File1", method = RequestMethod.POST)
         public String File_1(@RequestParam("file1") String file, Model model) {
-            String path = "home/upload/"+file;
+            String path = "/home/orangepi/Documents/upload/"+file;
             //String path = System.getProperty("user.dir")+"/File/"+file;
             System.out.println("Impressora 1 imprimindo:");
             System.out.println(path);
             
-   
+            this.printers[0].printFile(path);
 
           /*  AQUI TU COLOCA a parte de envio de arquivo
             SerialPort port = SerialPort.getCommPorts()[0];
@@ -126,6 +137,7 @@ public class WebController{
             */
           
             service.files(model);
+            
             printer1="Aquivo: "+file;
             model.addAttribute("arquivo1", this.printer1);
             model.addAttribute("arquivo2", this.printer2);
@@ -137,10 +149,12 @@ public class WebController{
         
     @RequestMapping(value = "/File2", method = RequestMethod.POST)
         public String File_2(@RequestParam("file2") String file, Model model) {
-            String path = "home/upload/"+file;
+            String path = "home/orangepi/Documents/upload"+file;
             //String path = System.getProperty("user.dir")+"\\Files\\"+file;
             System.out.println("Impressora 2 imprimindo:");
             System.out.println(path);
+            
+            this.printers[1].printFile(path);
 
             service.files(model);
             printer2="Aquivo: "+file;
@@ -273,38 +287,47 @@ public class WebController{
          public String Axis(Model model, @RequestParam("x") String x,@RequestParam("passo") String passo){
              System.out.println(x);
              System.out.println(passo);
-             String move = "G0 ";
              
+             
+             
+             String move = "G0 ";
+             try{
              switch(x){
                  case "Printerx1+":
                      move = move + "X"+passo;
                      System.out.println(move);
-                  //   this.printers[0].sendInfo(move);
+                     this.printers[0].sendInfo("G91");
+                     this.printers[0].sendInfo(move);
                      break;
                  case "Printerx1-":
-                     move = move + "X"+passo;
+                     move = move + "X-"+passo;
                      System.out.println(move);
-                  //   this.printers[0].sendInfo(move);
+                     this.printers[0].sendInfo("G91");
+                     this.printers[0].sendInfo(move);
                      break;
                  case "Printery1+":
                      move = move + "Y"+passo;
                      System.out.println(move);
-                   //  this.printers[0].sendInfo(move);
+                     this.printers[0].sendInfo("G91");
+                     this.printers[0].sendInfo(move);
                      break;
                  case "Printery1-":
-                     move = move + "Y"+passo;
+                     move = move + "Y-"+passo;
                      System.out.println(move);
-                   //  this.printers[0].sendInfo(move);  
+                     this.printers[0].sendInfo("G91");
+                     this.printers[0].sendInfo(move);
                      break;
                  case "Printerz1+":
                      move = move + "Z"+passo;
                      System.out.println(move);
-                     //this.printers[0].sendInfo(move);
+                     this.printers[0].sendInfo("G91");
+                     this.printers[0].sendInfo(move);
                      break;
                  case "Printerz1-":
-                     move = move + "Z"+passo;
+                     move = move + "Z-"+passo;
                      System.out.println(move);
-                     //this.printers[0].sendInfo(move);
+                     this.printers[0].sendInfo("G91");
+                     this.printers[0].sendInfo(move);
                      break;
                  case "Printerx2+":
                      move = move + "X"+passo;
@@ -337,7 +360,9 @@ public class WebController{
                      //this.printers[1].sendInfo(move);
                      break;
                      
-             
+                }
+             } catch(IndexOutOfBoundsException e ){
+                 System.err.println("Printer not connected!");
              }
              
              
@@ -420,7 +445,8 @@ public class WebController{
 
         String fileName = file.getOriginalFilename();
         try {
-          file.transferTo( new File("/home/upload/" + fileName));  
+        Files.createDirectories(Paths.get("/home/orangepi/Documents/upload/"));
+        file.transferTo( new File("/home/orangepi/Documents/upload/" + fileName));  
         //file.transferTo( new File("C:\\upload\\" + fileName));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -431,7 +457,20 @@ public class WebController{
         
         
         
-        
+        @Override
+        public void tempChange(int index, PrinterData pd){
+            switch(index){
+                case 0:
+                    /* Coloca aqui a forma de colocar os dados na interface
+                        this.printersData[index] = pd;
+                        temperatura bico = pd.getTipTemp();
+                        temperatura final bico = pd.getTipFinalTemp();
+                        temperatura base = pd.getBaseTemp();
+                        temperatura final base = pd.getBaseFinalTemp();
+                    */
+                    break;
+            }
+        }
         
         
     

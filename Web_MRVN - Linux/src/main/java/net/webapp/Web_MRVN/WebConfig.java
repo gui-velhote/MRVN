@@ -26,7 +26,7 @@ public class WebConfig {
     
     public void files(Model model){
             List<String> files = new ArrayList<>();
-            File diret = new File("/home/upload");
+            File diret = new File("/home/orangepi/Documents/upload");
             
             if(!diret.exists()){
                 diret.mkdir();
@@ -34,7 +34,7 @@ public class WebConfig {
 
             
              //String dir = "C:\\upload";
-             String dir = "/home/upload";
+             String dir = "/home/orangepi/Documents/upload";
              File file_1_1 = new File(dir);
              File afile[] = file_1_1.listFiles();
                files.clear();
