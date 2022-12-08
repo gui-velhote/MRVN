@@ -115,7 +115,7 @@ public class WebController implements DataListener{
             
             try{
                 if(sizePrinter == 1){
-                   System.out.println("Porcentagem = " + this.percentage[0]);
+                   //System.out.println("Porcentagem = " + this.percentage[0]);
                    model.addAttribute("wifi1", "wifi");
                    model.addAttribute("wifi2", "wifi_off");
                    model.addAttribute("bico1", "Temperatura do bico: " + String.valueOf(this.printers[0].getPrinterData().getTipTemp()) + "\u2103");
@@ -123,12 +123,13 @@ public class WebController implements DataListener{
                    model.addAttribute("status2", "Status: Impressora não conectada");
                    model.addAttribute("pText1", this.pText1);
                    model.addAttribute("pText2", this.pText2);
-                   model.addAttribute("tProgress1", this.percentage[0]);
-                   model.addAttribute("tProgress2", "100%");
+                   model.addAttribute("progress1", this.percentage[0]);
+                   model.addAttribute("progress2", "100%");
+                   model.addAttribute("progress2", "100%");
                    model.addAttribute("status1", this.status[0]);
                 }
                 else if(sizePrinter > 1){
-
+                    //System.out.println("porcentagem 2: " + this.percentage[1]);
                    model.addAttribute("wifi1", "wifi");
                    model.addAttribute("wifi2", "wifi");
                    model.addAttribute("bico1", "Temperatura do bico: " + String.valueOf(this.printers[0].getPrinterData().getTipTemp()) + "\u2103");
@@ -137,8 +138,8 @@ public class WebController implements DataListener{
                    model.addAttribute("base2", "Temperatura da base: " + String.valueOf(this.printers[1].getPrinterData().getBaseTemp()) + "\u2103");
                     model.addAttribute("pText1", this.pText1);
                    model.addAttribute("pText2", this.pText2);
-                   model.addAttribute("tProgress1", this.percentage[0]);
-                   model.addAttribute("tProgress2", this.percentage[1]);
+                   model.addAttribute("progress1", this.percentage[0]);
+                   model.addAttribute("progress2", this.percentage[1]);
                    model.addAttribute("status1", this.status[0]);
                    model.addAttribute("status2", this.status[1]);
                 } 
