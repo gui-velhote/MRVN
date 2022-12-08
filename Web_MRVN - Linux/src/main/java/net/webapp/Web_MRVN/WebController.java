@@ -100,14 +100,17 @@ public class WebController implements DataListener{
             
              service.files(model);
              
+             this.mod = model;
+             
             this.printers = conn.getPrinters();
             this.sizePrinter = this.printers.length;
             
             if(sizePrinter >= 1){
+                System.out.println("Porcentagem = " + this.percentage);
                model.addAttribute("wifi1", "wifi");
-               //model.addAttribute("bico", "Status: " + String.valueOf(this.printers[0].getPrinterData().getTipTemp()));
+               model.addAttribute("bico", "Status: " + String.valueOf(this.printers[0].getPrinterData().getTipTemp()));
                //System.out.println("Status: " + this.printers[0].getPrinterData().getTipTemp());
-               //model.addAttribute("percentage1", this.percentage + "%");
+               model.addAttribute("percentage1", this.percentage);
             } 
             else{
                model.addAttribute("wifi1", "wifi_off");
@@ -182,7 +185,7 @@ public class WebController implements DataListener{
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
          
-            return "redirect:/";
+            return "index";
         }
         
         
@@ -200,7 +203,7 @@ public class WebController implements DataListener{
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
          
-            return "redirect:/";
+            return "index";
         }
 
     @RequestMapping(value = "/File4", method = RequestMethod.POST)
@@ -217,7 +220,7 @@ public class WebController implements DataListener{
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
          
-            return "redirect:/";
+            return "index";
         }
 
         @RequestMapping(value = "/AutoHomePrinter", method = RequestMethod.POST)
@@ -455,7 +458,7 @@ public class WebController implements DataListener{
         public String submit(@RequestParam("file") MultipartFile file, ModelMap modelMap) {
         modelMap.addAttribute("file", file);
         System.out.println(file);
-            return "redirect:/";
+            return "index";
         }
         
         
@@ -476,7 +479,8 @@ public class WebController implements DataListener{
         
         @RequestMapping(name = "/Progress1", method = RequestMethod.GET)
         public String setPercentage(@RequestParam("percentage1") String percentage){
-            
+            System.out.println("percentage = " + percentage);
+            this.mod.addAttribute("percentage1", percentage);
             return (percentage);
         }
         

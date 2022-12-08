@@ -47,6 +47,13 @@ public class PrinterData {
         this.baseTemp = dataList.get(2);
         this.baseFinalTemp = dataList.get(3);
         
+        System.out.println("Temperatures:");
+        
+        System.out.println(this.tipTemp = dataList.get(0));
+        System.out.println(this.tipFinalTemp = dataList.get(1));
+        System.out.println(this.baseTemp = dataList.get(2));
+        System.out.println(this.baseFinalTemp = dataList.get(3));
+        
     }
     
     public void setPrinterPercentage(int percentage){

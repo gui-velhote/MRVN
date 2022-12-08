@@ -116,7 +116,7 @@
                 <div class="progress-view" id="Progress_1">
 
                    <progress-circle color="White" edge=#232333 width="50" id="pc1" >
-                        <progress th:value="1%" stroke=#696cff name="Progress1"  > </progress>
+                        <progress th:value="${percentage1}" stroke=#696cff name="Progress1"  > </progress>
                     </progress-circle>
                 </div>
             
@@ -256,7 +256,7 @@
             
              <div class="config-up" >     
                  <h1 style="color: #fff; text-align: center; font-size: medium">UPLOAD FILES</h1>
-              <input id="fileupload" type="file" name="fileupload" style="margin-left: 20px;"/> 
+              <input id="fileupload" type="file" name="fileupload" style="margin-left: 20px; color: #fff"/> 
               <button id="upload-button" onclick="uploadFile()" class="bt"> Upload </button>
 
              </div>  

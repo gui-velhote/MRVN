@@ -221,6 +221,7 @@ public class Printer implements SerialPortDataListener{
                 }
                 
                 else if(this.TEMPERATURE_CHECK.matcher(this.data).find()){
+                    System.out.println("Temperature check");
                     try {
                         
                         this.printerData.parseData(this.data);
