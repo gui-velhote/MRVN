@@ -108,15 +108,18 @@
             <i name="wifi1" class="material-icons blink" th:text="${wifi1}" style="float: right; margin-right:20px; margin-top:10px; color: aliceblue" ></i>   
                 <div class="resume-view">
                     <span th:text="${arquivo1}">Arquivo:</span><br>
-                    <span th:text="${bico}">Status:</span><br> 
+                    
+                    <span th:text="${status1}">Status: parada</span><br>
+                    
+                    <span th:text="${bico1}">Temperatura do bico: </span><br> 
+                    <span th:text="${base1}">Temperatura da base: </span><br> 
                    
                 </div>
 
 
                 <div class="progress-view" id="Progress_1">
-
-                   <progress-circle color="White" edge=#232333 width="50" id="pc1" >
-                        <progress th:value="${percentage1}" stroke=#696cff name="Progress1"  > </progress>
+                   <progress-circle color="White" edge=#232333 width="50">
+                        <progress th:value="${progress1}" stroke=#696cff> </progress>
                     </progress-circle>
                 </div>
             
@@ -142,21 +145,18 @@
           
             </div>
             
- 
-                   
-
-               
-               
-               
                
 
             <div class="box-view" id="printer2">
             <span class="title">Printer 2: </span>
             
-            <i th:text="${wifi2}" class="material-icons blink" style="float: right; margin-right:20px; margin-top:10px; color: aliceblue" ></i>   
+            <i name="wifi2" th:text="${wifi2}" class="material-icons blink" style="float: right; margin-right:20px; margin-top:10px; color: aliceblue" ></i>   
                 <div class="resume-view">
                     <span th:text="${arquivo2}">Arquivo:</span><br>
-                    <span>Status:</span><br> 
+                    <span th:text="${status2}">Status: parada</span><br>
+                    
+                    <span th:text="${bico2}">Temperatura do bico: </span><br> 
+                    <span th:text="${base2}">Temperatura da base: </span><br> 
                     
                    
             </div>

@@ -44,6 +44,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -61,7 +63,8 @@ public class WebController implements DataListener{
         private PrinterData[] printersData;
         private Connection conn = new Connection();
         private int sizePrinter = 0;
-        private int percentage = 1;
+        private String[] percentage;
+        private String[] status;
         
         private Model mod;
         
@@ -71,59 +74,100 @@ public class WebController implements DataListener{
         public WebController() {
             conn.start();
             this.printers = conn.getPrinters();
-            
             this.printersData = new PrinterData[this.printers.length];
-            
+            this.percentage = new String[this.sizePrinter];
+            this.status = new String[this.conn.getPrinters().length];
             for(int i=0;i<this.printers.length;i++){
+                this.printers[i].addDataListener(this);
                 this.printersData[i] = this.printers[i].getPrinterData();
             }
-            
             this.sizePrinter = this.printers.length;
+            for(int i=0;i<this.percentage.length;i++){
+                this.percentage[i] = "1%";
+            }
+            for(int i=0;i<this.status.length;i++){
+                this.status[i] = "parada";
+            }
             
         }
-   /*
-        @GetMapping("/redirectWithRedirectView")
-        public RedirectView redirectWithUsingRedirectView(RedirectAttributes attributes) {
-            attributes.addFlashAttribute("flashAttribute", "redirectWithRedirectView");
-            attributes.addAttribute("attribute", "redirectWithRedirectView");
-            return new RedirectView("redirectedUrl");
-        }*/
         
         @RequestMapping(value = "/", method = RequestMethod.GET)
         public String Refresh(Model model){
-            /*
-            for(int i=0;i<this.printers.length;i++){
-                this.printersData[i] = this.printers[i].getPrinterData();
+            
+            service.files(model);
+            
+            if(this.percentage.length<1){
+                this.percentage = new String[this.sizePrinter];
+            
+                for(int i=0;i<this.percentage.length;i++){
+                    this.percentage[i] = "1%";
+                }
             }
-            */
-            
-            
-             service.files(model);
              
              this.mod = model;
              
             this.printers = conn.getPrinters();
             this.sizePrinter = this.printers.length;
             
-            if(sizePrinter >= 1){
-                System.out.println("Porcentagem = " + this.percentage);
-               model.addAttribute("wifi1", "wifi");
-               model.addAttribute("bico", "Status: " + String.valueOf(this.printers[0].getPrinterData().getTipTemp()));
-               //System.out.println("Status: " + this.printers[0].getPrinterData().getTipTemp());
-               model.addAttribute("percentage1", this.percentage);
-            } 
-            else{
-               model.addAttribute("wifi1", "wifi_off");
-               model.addAttribute("wifi2", "wifi_off"); 
+            try{
+                if(sizePrinter == 1){
+                   System.out.println("Porcentagem = " + this.percentage[0]);
+                   model.addAttribute("wifi1", "wifi");
+                   model.addAttribute("wifi2", "wifi_off");
+                   model.addAttribute("bico1", "Temperatura do bico: " + String.valueOf(this.printers[0].getPrinterData().getTipTemp()) + "\u2103");
+                   model.addAttribute("base1", "Temperatura da base: " + String.valueOf(this.printers[0].getPrinterData().getBaseTemp()) + "\u2103");
+                   model.addAttribute("status2", "Status: Impressora não conectada");
+                   model.addAttribute("progress1", this.percentage[0]);
+                   model.addAttribute("progress2", "100%");
+                   model.addAttribute("status1", this.status[0]);
+                }
+                else if(sizePrinter == 2){
+
+                   model.addAttribute("wifi1", "wifi");
+                   model.addAttribute("wifi2", "wifi");
+                   model.addAttribute("bico1", "Temperatura do bico: " + String.valueOf(this.printers[0].getPrinterData().getTipTemp()) + "\u2103");
+                   model.addAttribute("base1", "Temperatura da base: " + String.valueOf(this.printers[0].getPrinterData().getBaseTemp()) + "\u2103");
+                   model.addAttribute("bico2", "Temperatura do bico: " + String.valueOf(this.printers[1].getPrinterData().getTipTemp()) + "\u2103");
+                   model.addAttribute("base2", "Temperatura da base: " + String.valueOf(this.printers[1].getPrinterData().getBaseTemp()) + "\u2103");
+                   model.addAttribute("percentage1", this.percentage[0]);
+                   model.addAttribute("percentage2", this.percentage[1]);
+                   model.addAttribute("status1", this.status[0]);
+                   model.addAttribute("status2", this.status[1]);
+                } 
+                else{
+                   model.addAttribute("wifi1", "wifi_off");
+                   model.addAttribute("wifi2", "wifi_off"); 
+                }
+            } catch(ArrayIndexOutOfBoundsException e){
+                    this.percentage = new String[this.printers.length];
+                    
+                    for(int i=0;i<this.percentage.length;i++){
+                        this.percentage[i] = "N/A";
+                    }
+                    
+                    this.status = new String[this.printers.length];
+                    
+                    for(int i=0;i<this.status.length;i++){
+                        this.status[i] = "Status: Parada";
+                    }
+                    
+                    this.printersData = new PrinterData[this.printers.length];
+                    
+                    for(int i=0;i<this.printers.length;i++){
+                        this.printers[i].addDataListener(this);
+                        this.printersData[i] = this.printers[i].getPrinterData();
+                    }
+                    
+                    Refresh(model);
+                    
             }
-            
-            
-            
             
             model.addAttribute("arquivo1", this.printer1);
             model.addAttribute("arquivo2", this.printer2);
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
+            
+            
     
         return "index";
     
@@ -146,46 +190,47 @@ public class WebController implements DataListener{
     @RequestMapping(value = "/File1", method = RequestMethod.POST)
         public String File_1(@RequestParam("file1") String file, Model model) {
             String path = "/home/orangepi/Documents/upload/"+file;
-            //String path = System.getProperty("user.dir")+"/File/"+file;
             System.out.println("Impressora 1 imprimindo:");
             System.out.println(path);
             
             this.printers[0].printFile(path);
-
-          /*  AQUI TU COLOCA a parte de envio de arquivo
-            SerialPort port = SerialPort.getCommPorts()[0];
-            Printer p = new Printer(port);
-            p.sendFile(file);
-            */
           
             service.files(model);
             
-            printer1="Aquivo: "+file;
+            printer1="Arquivo: "+file;
             model.addAttribute("arquivo1", this.printer1);
             model.addAttribute("arquivo2", this.printer2);
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
-          
+            
+            this.status[0] = "Status: Imprimindo";
+            this.percentage[0] = "1%";
+            
+            model.addAttribute("progressText1", "Printing...");
+           
+            
             return "redirect:/";
         }
         
     @RequestMapping(value = "/File2", method = RequestMethod.POST)
         public String File_2(@RequestParam("file2") String file, Model model) {
-            String path = "home/orangepi/Documents/upload"+file;
-            //String path = System.getProperty("user.dir")+"\\Files\\"+file;
+            String path = "/home/orangepi/Documents/upload/"+file;
+            
             System.out.println("Impressora 2 imprimindo:");
             System.out.println(path);
             
             this.printers[1].printFile(path);
 
             service.files(model);
-            printer2="Aquivo: "+file;
+            printer2="Arquivo: "+file;
             model.addAttribute("arquivo1", this.printer1);
             model.addAttribute("arquivo2", this.printer2);
             model.addAttribute("arquivo3", this.printer3);
             model.addAttribute("arquivo4", this.printer4);
          
-            return "index";
+            this.status[1] = "Imprimindo";
+            
+            return "redirect:/";
         }
         
         
@@ -246,7 +291,7 @@ public class WebController implements DataListener{
             
             System.out.println(printer);
             
-            return "index2";
+            return "redirect:/";
         
         }
         
@@ -354,32 +399,38 @@ public class WebController implements DataListener{
                  case "Printerx2+":
                      move = move + "X"+passo;
                      System.out.println(move);
-                  //   this.printers[1].sendInfo(move);
+                     this.printers[1].sendInfo("G91");
+                     this.printers[1].sendInfo(move);
                      break;
                  case "Printerx2-":
                      move = move + "X"+passo;
                      System.out.println(move);
-                  //   this.printers[1].sendInfo(move);
+                     this.printers[1].sendInfo("G91");
+                     this.printers[1].sendInfo(move);
                      break;
                  case "Printery2+":
                      move = move + "Y"+passo;
                      System.out.println(move);
-                   //  this.printers[1].sendInfo(move);
+                     this.printers[1].sendInfo("G91");
+                     this.printers[1].sendInfo(move);
                      break;
                  case "Printery2-":
                      move = move + "Y"+passo;
                      System.out.println(move);
-                   //  this.printers[1].sendInfo(move);  
+                     this.printers[1].sendInfo("G91");
+                     this.printers[1].sendInfo(move);
                      break;
                  case "Printerz2+":
                      move = move + "Z"+passo;
                      System.out.println(move);
-                     //this.printers[1].sendInfo(move);
+                     this.printers[1].sendInfo("G91");
+                     this.printers[1].sendInfo(move);
                      break;
                  case "Printerz2-":
                      move = move + "Z"+passo;
                      System.out.println(move);
-                     //this.printers[1].sendInfo(move);
+                     this.printers[1].sendInfo("G91");
+                     this.printers[1].sendInfo(move);
                      break;
                      
                 }
@@ -475,14 +526,6 @@ public class WebController implements DataListener{
         } 
             return ResponseEntity.ok("File uploaded successfully.");
         }
-
-        
-        @RequestMapping(name = "/Progress1", method = RequestMethod.GET)
-        public String setPercentage(@RequestParam("percentage1") String percentage){
-            System.out.println("percentage = " + percentage);
-            this.mod.addAttribute("percentage1", percentage);
-            return (percentage);
-        }
         
         @Override
         public void tempChange(int index, PrinterData pd){
@@ -490,15 +533,9 @@ public class WebController implements DataListener{
         }
         
         @Override
-        public void percentageChange(int index, PrinterData pd){
-            
-           switch(index){
-               case 0:
-                   this.percentage = pd.getPrinterPercentage() + 1;
-                   setPercentage(String.valueOf(this.percentage) + "%");
-                   break;
-           }
-           
+        public void percentageChange(int index, int percentage){
+            percentage++;
+            this.percentage[index] = String.valueOf(percentage) + "%";
         }
      
     

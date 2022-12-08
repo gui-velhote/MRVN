@@ -142,7 +142,7 @@ public class Printer implements SerialPortDataListener{
     public void percentageChange(int percentage){
         this.printerData.setPrinterPercentage(percentage);
         for(DataListener d : this.TempDataListeners){
-            d.percentageChange(this.INDEX, this.printerData);
+            d.percentageChange(this.INDEX, percentage);
         }
     }
     
@@ -172,6 +172,7 @@ public class Printer implements SerialPortDataListener{
                 
                 Matcher matchError = this.ERROR_ON_LINE_READ.matcher(this.data);
                 Matcher matchFile = this.FILE_IN_SD.matcher(this.data);
+                Matcher matchTemp = this.TEMPERATURE_CHECK.matcher(this.data);
                 
                 if(this.DATA_RECIEVED.matcher(this.data).find()){
                   
@@ -187,6 +188,21 @@ public class Printer implements SerialPortDataListener{
                         this.printFile = this.sendCommand.getPrinting();
                         
                           System.out.println(this.printFile);
+                    }
+                }
+                
+                if(matchTemp.find()){
+                    System.out.println("Temperature check");
+                    try {
+                        
+                        this.printerData.parseData(matchTemp.group());
+                        
+                        Thread.sleep(10);
+                        
+                        for(DataListener dl : this.TempDataListeners){
+                            dl.tempChange(this.INDEX, this.printerData);
+                        }
+                    } catch (InterruptedException ex) {
                     }
                 }
                 
@@ -220,20 +236,6 @@ public class Printer implements SerialPortDataListener{
                     }
                 }
                 
-                else if(this.TEMPERATURE_CHECK.matcher(this.data).find()){
-                    System.out.println("Temperature check");
-                    try {
-                        
-                        this.printerData.parseData(this.data);
-                        
-                        for(DataListener dl : this.TempDataListeners){
-                            dl.tempChange(this.INDEX, this.printerData);
-                        }
-                        
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                    }
-                }
                 
                 else if(this.POSITION_MONITOR.matcher(this.data).find()){
                     try {

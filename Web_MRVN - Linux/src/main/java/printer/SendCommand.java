@@ -98,7 +98,7 @@ public class SendCommand extends Thread implements CommandListener {
     private void sendInfo(String gcode){
         
         if((gcode != null) && (gcode != "")){
-            System.out.println(gcode);
+            //System.out.println(gcode);
 
             String info = gcode.strip() + "\r\n";
             this.CONN_PORT.writeBytes(info.getBytes(), info.getBytes().length);
@@ -192,10 +192,10 @@ public class SendCommand extends Thread implements CommandListener {
         System.out.println("Line: " + this.nextFileLine);
         System.out.println("Size: " + this.fileLines.size());
         */
-        
+        /*
         System.out.println("Next line: " + this.nextFileLine);
         System.out.println("File size: " + this.fileLines.size());
-        
+        */
         if(this.nextFileLine == this.fileLines.size()){
             this.nextFileLine = 0;
             this.printing = 0;

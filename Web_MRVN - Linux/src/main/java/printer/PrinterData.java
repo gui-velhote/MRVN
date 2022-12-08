@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  *
  * @author Loki
  */
-public class PrinterData {
+public class PrinterData{
     
     
     private Pattern DATA_PATTERN = Pattern.compile("[0-9]+([.][0-9]+)?");
@@ -28,8 +28,11 @@ public class PrinterData {
     private double yAxis;
     private double zAxis;
     
+    private String data;
+    
     public PrinterData(){
         this.printPercentage = 0;
+        this.data = null;
     }
     
     public void parseData(String data){
@@ -47,13 +50,14 @@ public class PrinterData {
         this.baseTemp = dataList.get(2);
         this.baseFinalTemp = dataList.get(3);
         
+        /*
         System.out.println("Temperatures:");
         
         System.out.println(this.tipTemp = dataList.get(0));
         System.out.println(this.tipFinalTemp = dataList.get(1));
         System.out.println(this.baseTemp = dataList.get(2));
         System.out.println(this.baseFinalTemp = dataList.get(3));
-        
+        */
     }
     
     public void setPrinterPercentage(int percentage){
@@ -86,6 +90,10 @@ public class PrinterData {
 
     public double getBaseFinalTemp() {
         return baseFinalTemp;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
     
 }
