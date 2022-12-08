@@ -3,6 +3,7 @@
     
 
         <meta charset="UTF-8">
+        <meta http-equiv="refresh" content="10">
     
         <link rel="stylesheet" href="style.css">
         <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
@@ -107,15 +108,18 @@
             <i name="wifi1" class="material-icons blink" th:text="${wifi1}" style="float: right; margin-right:20px; margin-top:10px; color: aliceblue" ></i>   
                 <div class="resume-view">
                     <span th:text="${arquivo1}">Arquivo:</span><br>
-                    <span>Status:</span><br> 
+                    
+                    <span th:text="${status1}">Status: parada</span><br>
+                    
+                    <span th:text="${bico1}">Temperatura do bico: </span><br> 
+                    <span th:text="${base1}">Temperatura da base: </span><br> 
                    
                 </div>
 
 
                 <div class="progress-view" id="Progress_1">
-
-                   <progress-circle color="White" edge=#232333 width="50" id="pc1" >
-                        <progress value="1%" stroke=#696cff name="Progress1"  > </progress>
+                   <progress-circle color="White" edge=#232333 width="50">
+                        <progress th:value="${progress1}" stroke=#696cff> </progress>
                     </progress-circle>
                 </div>
             
@@ -141,21 +145,18 @@
           
             </div>
             
- 
-                   
-
-               
-               
-               
                
 
             <div class="box-view" id="printer2">
             <span class="title">Printer 2: </span>
             
-            <i th:text="${wifi2}" class="material-icons blink" style="float: right; margin-right:20px; margin-top:10px; color: aliceblue" ></i>   
+            <i name="wifi2" th:text="${wifi2}" class="material-icons blink" style="float: right; margin-right:20px; margin-top:10px; color: aliceblue" ></i>   
                 <div class="resume-view">
                     <span th:text="${arquivo2}">Arquivo:</span><br>
-                    <span>Status:</span><br> 
+                    <span th:text="${status2}">Status: parada</span><br>
+                    
+                    <span th:text="${bico2}">Temperatura do bico: </span><br> 
+                    <span th:text="${base2}">Temperatura da base: </span><br> 
                     
                    
             </div>
@@ -255,7 +256,7 @@
             
              <div class="config-up" >     
                  <h1 style="color: #fff; text-align: center; font-size: medium">UPLOAD FILES</h1>
-              <input id="fileupload" type="file" name="fileupload" style="margin-left: 20px;"/> 
+              <input id="fileupload" type="file" name="fileupload" style="margin-left: 20px; color: #fff"/> 
               <button id="upload-button" onclick="uploadFile()" class="bt"> Upload </button>
 
              </div>  
@@ -674,7 +675,7 @@
             
             
          <div class="box-config-m" id="config1mobile">
-               <h2 style="color:#fff; margin-top: 10px; margin-left: 10px;">Comandos Rápidos Printer 1 - Mobile</h2>
+                 <h2 style="color:#fff; margin-top: 10px; margin-left: 10px;">Comandos Rápidos Printer 1 - Mobile</h2>
               
               <form  th:action="@{/AutoHomePrinter}"  method="post">
               <button name="Home11" class="bt" style="float: left">Auto Home</button>
@@ -705,6 +706,7 @@
               </form>
               </div>
                
+               
 
            
             
@@ -712,60 +714,38 @@
             
             
          <div class="box-config-m" id="config1mobile2">
-             
-          
-             
-         <!--    
-             <div class="axis-box">
-             
-             <span class="material-icons" style="
-                         color: #fff; 
-                        font-size: 500%;
-                        margin-left: 140px;
-                        margin-top: 100px;
-                                                " >
-                 arrow_circle_up
-             </span>
-             <br>
-             <span class="material-icons" style="
-                         color: #fff; 
-                        font-size: 500%;
-                        margin-left: 50px;
-                                                " >
-                 arrow_circle_left
-             </span>
-           
-            <form  th:action="@{/AutoHomePrinter}"  method="post"> 
-                <button><span class="material-icons" style="
-                         color: #fff; 
-                        font-size: 500%; ">
-                    check_box_outline_blank
-                    </span></button>
-                <input name="Home" value="Printer2" style="display: none">
-            </form>
-            
-            <span class="material-icons" style="
-                         color: #fff; 
-                        font-size: 500%;
-                        margin-left: 0px;
-                                                " >
-                 arrow_circle_right
-             </span>
- 
-             
-            <span class="material-icons" style="
-                         color: #fff; 
-                        font-size: 500%;
-                        margin-left: 140px;
-                                                " >
-                 arrow_circle_down
-             </span>
+                 <h2 style="color:#fff; margin-top: 10px; margin-left: 10px;">Comandos Rápidos Printer 1 - Mobile</h2>
               
-             </div>
+              <form  th:action="@{/AutoHomePrinter}"  method="post">
+              <button name="Home11" class="bt" style="float: left">Auto Home</button>
+              <input name="Home" value="Printer1" style="display: none">
+              </form>
                
-              </div>
-               -->
-
+              <form name="Home12" th:action="@{/ABSPrinter}"  method="post">
+              <button class="bt" style="float: left">ABS</button>
+               <input name="ABS" value="Printer1" style="display: none">
+              </form>
+               
+               <form name="Home13" th:action="@{/PLAPrinter}"  method="post">
+              <button class="bt" style="float: left">PLA</button>
+               <input name="PLA" value="Printer1" style="display: none">
+               </form> 
+              
+              
+              <div class="axis-box">
+                 
+              <form name="xyz" th:action="@{/MovePrinterMobile}"  method="post">
+              <label class="format-text">Eixo X</label>
+              <input style="margin-left: 10px; margin-top: 20px; border-radius: 10px; " name="x"  th:id="input1" class="input-file" type="number" min="0" step="1" value="100"/><br><br>
+              <label class="format-text">Eixo Y</label>
+              <input style="margin-left: 10px; margin-top: 20px; border-radius: 10px; " name="y"  th:id="input1" class="input-file" type="number" min="0" step="1" value="100"/> <br> <br>
+              <label class="format-text">Eixo Z</label>
+              <input style="margin-left: 10px; margin-top: 20px; border-radius: 10px;" name="z"  th:id="input1" class="input-file" type="number" min="0" step="1" value="100"/>
+              <button class="bt" style="float: right">Set Position</button>
+              </form>
+              </div>             
+          
+          
            
             
           </div> 

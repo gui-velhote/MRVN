@@ -55,7 +55,7 @@
                 
               <!--<i class="material-icons">---</i>-->
                 <div class="logo_name">MRVN</div>
-                <i id="btn" ><i class="material-icons" style="float: left;" >print</i></i>
+                <i id="btn" ><img src="..static/imagens/triquetra.png"  th:src="@{imagens/triquetra.png}" ></img></i>
             </div>
             <ul class="nav-list">
 
@@ -113,13 +113,15 @@
                     
                     <span th:text="${bico1}">Temperatura do bico: </span><br> 
                     <span th:text="${base1}">Temperatura da base: </span><br> 
+                    
+                    <span th:text="${tProgress1}">Prgoresso: </span><br> 
                    
                 </div>
 
 
                 <div class="progress-view" id="Progress_1">
                    <progress-circle color="White" edge=#232333 width="50">
-                        <progress th:value="${progress1}" stroke=#696cff> </progress>
+                        <progress th:value="${progress1}" stroke=#696cff>Aguardando </progress>
                     </progress-circle>
                 </div>
             
@@ -158,13 +160,15 @@
                     <span th:text="${bico2}">Temperatura do bico: </span><br> 
                     <span th:text="${base2}">Temperatura da base: </span><br> 
                     
+                    <span th:text="${tProgress2}">Prgoresso: </span><br> 
+                    
                    
             </div>
 
 
                 <div class="progress-view" id="Progress_2">
                     <progress-circle color="White" edge=#232333 width="50">
-                        <progress value="1%" stroke=#696cff name="Progress2"  > </progress>
+                        <progress th:value="${progress2}" stroke=#696cff > </progress>
                     </progress-circle>
                 </div>
             

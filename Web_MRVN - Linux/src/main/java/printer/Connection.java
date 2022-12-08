@@ -93,7 +93,7 @@ public class Connection extends Thread implements PrinterDisconnectListener{
     
     @Override
     public void pinterDisconnect(Printer printer){
-        System.out.println(this.printers.remove(printer));
+        System.out.println(this.printers.remove(this.printers.indexOf(printer)));
         System.out.println("Printer disconnected Size: " + this.printers.size());
         this.connectedPrinters = this.printers.size();
     }

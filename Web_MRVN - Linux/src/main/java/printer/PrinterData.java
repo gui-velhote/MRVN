@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class PrinterData{
     
     
-    private Pattern DATA_PATTERN = Pattern.compile("[0-9]+([.][0-9]+)?");
+    private Pattern DATA_PATTERN = Pattern.compile("[-]?[0-9]+([.][0-9]+)?");
     
     private String printerName;
     private double tipTemp;

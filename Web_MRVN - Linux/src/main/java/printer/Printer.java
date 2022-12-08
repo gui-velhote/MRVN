@@ -27,7 +27,7 @@ public class Printer implements SerialPortDataListener{
     private final Pattern ERROR_ON_LINE_READ = Pattern.compile("Resend: [0-9]+");
     private final Pattern ERROR_UNKNOWN_COMMAND = Pattern.compile("echo:Unknown command:");
     private final Pattern DATA_RECIEVED = Pattern.compile("ok");
-    private final Pattern TEMPERATURE_CHECK = Pattern.compile("T:[0-9]+[.][0-9]+ /[0-9]+[.][0-9]+ B:[0-9]+[.][0-9]+ /[0-9]+[.][0-9]+");
+    private final Pattern TEMPERATURE_CHECK = Pattern.compile("T:[-]?[0-9]+[.][0-9]+ /[0-9]+[.][0-9]+ B:[-]?[0-9]+[.][0-9]+ /[0-9]+[.][0-9]+");
     private final Pattern POSITION_MONITOR = Pattern.compile("X:[0-9]+[.][0-9]+ Y:[0-9]+[.][0-9]+ Z:[0-9]+[.][0-9]+");
     private final Pattern FILE_OPEN_FAILED = Pattern.compile("open failed");
     private final Pattern FILE_CODE = Pattern.compile("^N[0-9]+");

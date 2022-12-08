@@ -65,6 +65,8 @@ public class WebController implements DataListener{
         private int sizePrinter = 0;
         private String[] percentage;
         private String[] status;
+        private String pText1 = "Aguardando";
+        private String pText2 = "Aguardando";
         
         private Model mod;
         
@@ -109,6 +111,8 @@ public class WebController implements DataListener{
             this.printers = conn.getPrinters();
             this.sizePrinter = this.printers.length;
             
+            //System.out.println("SizePrinter: " + this.sizePrinter);
+            
             try{
                 if(sizePrinter == 1){
                    System.out.println("Porcentagem = " + this.percentage[0]);
@@ -117,11 +121,13 @@ public class WebController implements DataListener{
                    model.addAttribute("bico1", "Temperatura do bico: " + String.valueOf(this.printers[0].getPrinterData().getTipTemp()) + "\u2103");
                    model.addAttribute("base1", "Temperatura da base: " + String.valueOf(this.printers[0].getPrinterData().getBaseTemp()) + "\u2103");
                    model.addAttribute("status2", "Status: Impressora não conectada");
-                   model.addAttribute("progress1", this.percentage[0]);
-                   model.addAttribute("progress2", "100%");
+                   model.addAttribute("pText1", this.pText1);
+                   model.addAttribute("pText2", this.pText2);
+                   model.addAttribute("tProgress1", this.percentage[0]);
+                   model.addAttribute("tProgress2", "100%");
                    model.addAttribute("status1", this.status[0]);
                 }
-                else if(sizePrinter == 2){
+                else if(sizePrinter > 1){
 
                    model.addAttribute("wifi1", "wifi");
                    model.addAttribute("wifi2", "wifi");
@@ -129,8 +135,10 @@ public class WebController implements DataListener{
                    model.addAttribute("base1", "Temperatura da base: " + String.valueOf(this.printers[0].getPrinterData().getBaseTemp()) + "\u2103");
                    model.addAttribute("bico2", "Temperatura do bico: " + String.valueOf(this.printers[1].getPrinterData().getTipTemp()) + "\u2103");
                    model.addAttribute("base2", "Temperatura da base: " + String.valueOf(this.printers[1].getPrinterData().getBaseTemp()) + "\u2103");
-                   model.addAttribute("percentage1", this.percentage[0]);
-                   model.addAttribute("percentage2", this.percentage[1]);
+                    model.addAttribute("pText1", this.pText1);
+                   model.addAttribute("pText2", this.pText2);
+                   model.addAttribute("tProgress1", this.percentage[0]);
+                   model.addAttribute("tProgress2", this.percentage[1]);
                    model.addAttribute("status1", this.status[0]);
                    model.addAttribute("status2", this.status[1]);
                 } 
@@ -142,7 +150,7 @@ public class WebController implements DataListener{
                     this.percentage = new String[this.printers.length];
                     
                     for(int i=0;i<this.percentage.length;i++){
-                        this.percentage[i] = "N/A";
+                        this.percentage[i] = "1%";
                     }
                     
                     this.status = new String[this.printers.length];
@@ -177,7 +185,7 @@ public class WebController implements DataListener{
     @RequestMapping(value="/Home")
         public String home(Model model){
             service.files(model);
-
+            
             model.addAttribute("arquivo1", this.printer1);
             model.addAttribute("arquivo2", this.printer2);
             model.addAttribute("arquivo3", this.printer3);
@@ -205,6 +213,7 @@ public class WebController implements DataListener{
             
             this.status[0] = "Status: Imprimindo";
             this.percentage[0] = "1%";
+            this.pText1 = "Printing...";
             
             model.addAttribute("progressText1", "Printing...");
            
@@ -229,6 +238,8 @@ public class WebController implements DataListener{
             model.addAttribute("arquivo4", this.printer4);
          
             this.status[1] = "Imprimindo";
+            this.percentage[1] = "1%";
+            this.pText2 = "Printing...";
             
             return "redirect:/";
         }
@@ -271,27 +282,29 @@ public class WebController implements DataListener{
         @RequestMapping(value = "/AutoHomePrinter", method = RequestMethod.POST)
         public String AutoHomePrinter1(@RequestParam("Home") String printer){
            
-            String home = "G28";
-            switch (printer) {
-                case "Printer1":
-                    this.printers[0].sendInfo(home);
-                    break;
-                case "Printer2":
-                    this.printers[1].sendInfo(home);
-                    break;
-                case "Printer3":
-                   this.printers[2].sendInfo(home);
-                    break;
-                case "Printer4":
-                    this.printers[3].sendInfo(home);
-                    break;
-                default:
-                    break;
+            if(!this.status[0].equals("Imprimindo")){
+                String home = "G28";
+                switch (printer) {
+                    case "Printer1":
+                        this.printers[0].sendInfo(home);
+                        break;
+                    case "Printer2":
+                        this.printers[1].sendInfo(home);
+                        break;
+                    case "Printer3":
+                       this.printers[2].sendInfo(home);
+                        break;
+                    case "Printer4":
+                        this.printers[3].sendInfo(home);
+                        break;
+                    default:
+                        break;
+                }
             }
             
             System.out.println(printer);
             
-            return "redirect:/";
+            return "index2";
         
         }
         
@@ -301,23 +314,25 @@ public class WebController implements DataListener{
             
             String ABS = "M140 S100 \nM104 S230";
             System.out.println(ABS);
-            switch (printer) {
-                case "Printer1":
-                    this.printers[0].sendInfo(ABS);
-                    break;
-                case "Printer2":
-                    this.printers[1].sendInfo(ABS);
-                    break;
-                case "Printer3":
-                   this.printers[2].sendInfo(ABS);
-                    break;
-                case "Printer4":
-                    this.printers[3].sendInfo(ABS);
-                    break;
-                default:
-                    break;
-            }            
             
+            if(!this.status[0].equals("Imprimindo")){
+                switch (printer) {
+                    case "Printer1":
+                        this.printers[0].sendInfo(ABS);
+                        break;
+                    case "Printer2":
+                        this.printers[1].sendInfo(ABS);
+                        break;
+                    case "Printer3":
+                       this.printers[2].sendInfo(ABS);
+                        break;
+                    case "Printer4":
+                        this.printers[3].sendInfo(ABS);
+                        break;
+                    default:
+                        break;
+                }            
+            }
             
             return "index2";
         
@@ -329,23 +344,25 @@ public class WebController implements DataListener{
             
             String PLA = "M140 S60 \nM104 S200";
             System.out.println(PLA);
-            switch (printer) {
-                case "Printer1":
-                    this.printers[0].sendInfo(PLA);
-                    break;
-                case "Printer2":
-                    this.printers[1].sendInfo(PLA);
-                    break;
-                case "Printer3":
-                   this.printers[2].sendInfo(PLA);
-                    break;
-                case "Printer4":
-                    this.printers[3].sendInfo(PLA);
-                    break;
-                default:
-                    break;
-            }              
             
+            if(!this.status[0].equals("Imprimindo")){
+                switch (printer) {
+                    case "Printer1":
+                        this.printers[0].sendInfo(PLA);
+                        break;
+                    case "Printer2":
+                        this.printers[1].sendInfo(PLA);
+                        break;
+                    case "Printer3":
+                       this.printers[2].sendInfo(PLA);
+                        break;
+                    case "Printer4":
+                        this.printers[3].sendInfo(PLA);
+                        break;
+                    default:
+                        break;
+                }              
+            }
             return "index2";
         
         }
@@ -355,94 +372,76 @@ public class WebController implements DataListener{
              System.out.println(x);
              System.out.println(passo);
              
-             
+             int printerIndex = Integer.valueOf(x.replaceAll("[^0-9]+", ""));
              
              String move = "G0 ";
-             try{
-             switch(x){
-                 case "Printerx1+":
-                     move = move + "X"+passo;
-                     System.out.println(move);
-                     this.printers[0].sendInfo("G91");
-                     this.printers[0].sendInfo(move);
-                     break;
-                 case "Printerx1-":
-                     move = move + "X-"+passo;
-                     System.out.println(move);
-                     this.printers[0].sendInfo("G91");
-                     this.printers[0].sendInfo(move);
-                     break;
-                 case "Printery1+":
-                     move = move + "Y"+passo;
-                     System.out.println(move);
-                     this.printers[0].sendInfo("G91");
-                     this.printers[0].sendInfo(move);
-                     break;
-                 case "Printery1-":
-                     move = move + "Y-"+passo;
-                     System.out.println(move);
-                     this.printers[0].sendInfo("G91");
-                     this.printers[0].sendInfo(move);
-                     break;
-                 case "Printerz1+":
-                     move = move + "Z"+passo;
-                     System.out.println(move);
-                     this.printers[0].sendInfo("G91");
-                     this.printers[0].sendInfo(move);
-                     break;
-                 case "Printerz1-":
-                     move = move + "Z-"+passo;
-                     System.out.println(move);
-                     this.printers[0].sendInfo("G91");
-                     this.printers[0].sendInfo(move);
-                     break;
-                 case "Printerx2+":
-                     move = move + "X"+passo;
-                     System.out.println(move);
-                     this.printers[1].sendInfo("G91");
-                     this.printers[1].sendInfo(move);
-                     break;
-                 case "Printerx2-":
-                     move = move + "X"+passo;
-                     System.out.println(move);
-                     this.printers[1].sendInfo("G91");
-                     this.printers[1].sendInfo(move);
-                     break;
-                 case "Printery2+":
-                     move = move + "Y"+passo;
-                     System.out.println(move);
-                     this.printers[1].sendInfo("G91");
-                     this.printers[1].sendInfo(move);
-                     break;
-                 case "Printery2-":
-                     move = move + "Y"+passo;
-                     System.out.println(move);
-                     this.printers[1].sendInfo("G91");
-                     this.printers[1].sendInfo(move);
-                     break;
-                 case "Printerz2+":
-                     move = move + "Z"+passo;
-                     System.out.println(move);
-                     this.printers[1].sendInfo("G91");
-                     this.printers[1].sendInfo(move);
-                     break;
-                 case "Printerz2-":
-                     move = move + "Z"+passo;
-                     System.out.println(move);
-                     this.printers[1].sendInfo("G91");
-                     this.printers[1].sendInfo(move);
-                     break;
-                     
+             
+                
+             
+                try{
+                switch(x){
+                    case "Printerx1+":
+                        move = move + "X"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printerx1-":
+                        move = move + "X-"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printery1+":
+                        move = move + "Y"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printery1-":
+                        move = move + "Y-"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printerz1+":
+                        move = move + "Z"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printerz1-":
+                        move = move + "Z-"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printerx2+":
+                        move = move + "X"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printerx2-":
+                        move = move + "X"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printery2+":
+                        move = move + "Y"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printery2-":
+                        move = move + "Y"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printerz2+":
+                        move = move + "Z"+passo;
+                        System.out.println(move);
+                        break;
+                    case "Printerz2-":
+                        move = move + "Z"+passo;
+                        System.out.println(move);
+                        break;
+
+                   }
+                } catch(IndexOutOfBoundsException e ){
+                    System.err.println("Printer not connected!");
                 }
-             } catch(IndexOutOfBoundsException e ){
-                 System.err.println("Printer not connected!");
-             }
              
-             
-             
-             
+                printerIndex--;
+                
+                if(!this.status[printerIndex].equals("Imprimindo")){
+                    this.printers[printerIndex].sendInfo("G91");
+                    this.printers[printerIndex].sendInfo(move);
+                }
          
-             model.addAttribute("passo",passo);
+                model.addAttribute("passo",passo);
 
              
              
@@ -458,46 +457,46 @@ public class WebController implements DataListener{
         public String Axis(Model model, @RequestParam("x") String x,@RequestParam("y") String y,@RequestParam("z") String z){
         
             
-            
+            if(!this.status[0].equals("Imprimindo")){
                 
-            if (x.equals("") && !y.equals("") && !z.equals("")){
-                String axis = "G0 Y"+y+" Z"+z;
-                this.printers[0].sendInfo(axis);
-                System.out.println(axis);
-            }
-            else if(y.equals("") && z.equals("") && !x.equals("")){
-                String axis = "G0 X"+x;
-                this.printers[0].sendInfo(axis);
-                System.out.println(axis);
-            }
-            else if(y.equals("") && x.equals("") && !z.equals("")){
-                String axis = "G0 Z"+z;
-                this.printers[0].sendInfo(axis);
-                System.out.println(axis);
-            }
-            else if(z.equals("") && x.equals("") && !y.equals("")){
-                String axis = "G0 Y"+y;
-                this.printers[0].sendInfo(axis);
-                System.out.println(axis);
-            }
-            else if(y.equals("") && !x.equals("") && !z.equals("")){
-                String axis = "G0 X"+x+" Z"+z;
-                this.printers[0].sendInfo(axis);
-                System.out.println(axis);
-            }
-            else if(z.equals("")&& !x.equals("") && !y.equals("")){
-                String axis = "G0 X"+x+" Y"+y;
-                this.printers[0].sendInfo(axis);
-                System.out.println(axis);
-            }
+                if (x.equals("") && !y.equals("") && !z.equals("")){
+                    String axis = "G0 Y"+y+" Z"+z;
+                    this.printers[0].sendInfo(axis);
+                    System.out.println(axis);
+                }
+                else if(y.equals("") && z.equals("") && !x.equals("")){
+                    String axis = "G0 X"+x;
+                    this.printers[0].sendInfo(axis);
+                    System.out.println(axis);
+                }
+                else if(y.equals("") && x.equals("") && !z.equals("")){
+                    String axis = "G0 Z"+z;
+                    this.printers[0].sendInfo(axis);
+                    System.out.println(axis);
+                }
+                else if(z.equals("") && x.equals("") && !y.equals("")){
+                    String axis = "G0 Y"+y;
+                    this.printers[0].sendInfo(axis);
+                    System.out.println(axis);
+                }
+                else if(y.equals("") && !x.equals("") && !z.equals("")){
+                    String axis = "G0 X"+x+" Z"+z;
+                    this.printers[0].sendInfo(axis);
+                    System.out.println(axis);
+                }
+                else if(z.equals("")&& !x.equals("") && !y.equals("")){
+                    String axis = "G0 X"+x+" Y"+y;
+                    this.printers[0].sendInfo(axis);
+                    System.out.println(axis);
+                }
 
-            else{
-            String axis = "G0 X"+x+" Y"+y+" Z"+z;
+                else{
+                    String axis = "G0 X"+x+" Y"+y+" Z"+z;
+
+                    System.out.println(axis);
+                }
             
-            System.out.println(axis);
             }
-            
-            
             
             
             return "index2";
